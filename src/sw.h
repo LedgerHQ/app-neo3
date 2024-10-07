@@ -100,6 +100,12 @@
 #define SW_DISPLAY_TOKEN_TRANSFER_AMOUNT_FAIL 0xb10A
 
 /**
+ * Status word for failing to parse script hash
+ * into a format that can be displayed on the device
+ */
+#define SW_DISPLAY_SCRIPT_HASH_FAIL 0xb10B
+
+/**
  * Status word for failing to convert public key to NEO address
  */
 #define SW_CONVERT_TO_ADDRESS_FAIL 0xb200

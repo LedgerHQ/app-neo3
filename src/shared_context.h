@@ -7,11 +7,13 @@
 
 typedef struct internalStorage_t {
     unsigned char scriptsAllowed;
+    unsigned char showScriptHash;
     uint8_t initialized;
 } internalStorage_t;
 
 typedef struct settings_strings_t {
     char scriptsAllowed[12];  // Allowed / Not Allowed
+    char showScriptHash[6]; // Show / Hide
 } settings_strings_t;
 
 extern settings_strings_t strings;

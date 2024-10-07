@@ -160,6 +160,13 @@ int start_sign_tx(void) {
              G_context.tx_info.transaction.valid_until_block);
     PRINTF("Valid until: %s\n", G_tx.valid_until_block);
 
+    #if !defined(TARGET_NANOS)
+    memset(G_tx.script_hash, 0, sizeof(G_tx.script_hash));
+    if(format_hex(G_context.tx_info.script_hash, 32, G_tx.script_hash, sizeof(G_tx.script_hash)) == -1) {
+        return io_send_sw(SW_DISPLAY_SCRIPT_HASH_FAIL);
+    }
+    PRINTF("Script hash: %s\n", G_tx.script_hash);
+    #endif
     start_sign_tx_ui();
 
     return 0;

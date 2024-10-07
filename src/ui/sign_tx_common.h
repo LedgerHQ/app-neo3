@@ -3,7 +3,12 @@
 #include "types.h"
 
 // number of steps in create_transaction_flow() for BAGL
+#if defined(TARGET_NANOS)
 #define MAX_NUM_STEPS 13
+#else
+// NanoS+ has extra "display hash" option
+#define MAX_NUM_STEPS 14
+#endif
 
 // uint32 (=max 10 chars) + \0
 #define UINT32_STRING_SIZE 11
@@ -17,6 +22,10 @@
 // 33 bytes public key as hex + \0
 #define VOTE_TO_SIZE (ECPOINT_LEN * 2 + 1)
 
+#if !defined(TARGET_NANOS)
+#define SHA256_SIZE (32 * 2 + 1)
+#endif
+
 typedef struct global_item_storage_s {
     char dst_address[ADDRESS_LEN + 1];
     char system_fee[AMOUNTS_MAX_SIZE];
@@ -26,6 +35,9 @@ typedef struct global_item_storage_s {
     char vote_to[VOTE_TO_SIZE];
     char network[NETWORK_NAME_MAX_SIZE];
     char valid_until_block[UINT32_STRING_SIZE];
+#if !defined(TARGET_NANOS)
+    char script_hash[SHA256_SIZE];
+#endif
 } global_item_storage_t;
 
 extern global_item_storage_t G_tx;

@@ -102,5 +102,9 @@ class DisplayTransferAmountError(Exception):
     pass
 
 
+class DisplayScriptHashError(Exception):
+    pass
+
+
 class ConvertToAddressFailError(Exception):
     pass

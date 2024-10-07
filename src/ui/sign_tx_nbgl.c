@@ -131,6 +131,10 @@ static void create_transaction_flow(void) {
     static_items[static_items_nb].value = G_tx.valid_until_block;
     ++static_items_nb;
 
+    static_items[static_items_nb].item = "Script hash";
+    static_items[static_items_nb].value = G_tx.script_hash;
+    ++static_items_nb;
+
     // dyn_items size is tailored to fit the worst case scenario
     // if the number of element is too big for the array it would have triggered a parsing error
     for (int i = 0; i < G_context.tx_info.transaction.signers_size; ++i) {

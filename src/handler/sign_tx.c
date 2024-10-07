@@ -108,6 +108,21 @@ int handler_sign_tx(buffer_t *cdata, uint8_t chunk, bool more) {
 
             PRINTF("Hash: %.*H\n", sizeof(G_context.tx_info.hash), G_context.tx_info.hash);
 
+#if !defined(TARGET_NANOS)
+            /**
+             * G_context.txinfo.raw_tx has been parsed in transaction_deserialize, and hashed as part of the signed data.
+             * Now that buffer can be re-used for storing the tx.script hash
+             */
+            cx_sha256_init(&tx_hash);
+            CX_ASSERT(cx_hash_no_throw((cx_hash_t *) &tx_hash,
+                             CX_LAST /*mode*/,
+                             G_context.tx_info.transaction.script /* data in */,
+                             G_context.tx_info.transaction.script_size /* data in len */,
+                             G_context.tx_info.script_hash /* hash out*/,
+                             sizeof(G_context.tx_info.script_hash) /* hash out len */));
+
+            PRINTF("Hash: %.*H\n", sizeof(G_context.tx_info.script_hash), G_context.tx_info.script_hash);
+#endif
             if (G_context.req_type != CONFIRM_TRANSACTION || G_context.state != STATE_PARSED) {
                 G_context.state = STATE_NONE;
                 return io_send_sw(SW_BAD_STATE);
