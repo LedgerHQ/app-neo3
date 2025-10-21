@@ -3,7 +3,7 @@
 #include <stdint.h>   // uint*_t
 #include <stdbool.h>  // bool
 
-#include "common/buffer.h"
+#include "app_buffer.h"
 
 /**
  * Handler for SIGN_TX command. If the BIP44 path is parsed successfully

@@ -2,7 +2,7 @@
 
 #include <stdint.h>   // uint*_t
 #include <stdbool.h>  // bool
-#include "buffer.h"
+#include "app_buffer.h"
 
 /**
  * @brief Parse BIP44 path from buffer and perform basic validations

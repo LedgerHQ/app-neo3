@@ -3,17 +3,9 @@
 #include <stddef.h>  // size_t
 #include <stdint.h>  // uint*_t
 
+#include "parser.h"
 #include "constants.h"
-#include "transaction/transaction_types.h"
-
-/**
- * Enumeration for the status of IO.
- */
-typedef enum {
-    READY,     /// ready for new event
-    RECEIVED,  /// data received
-    WAITING    /// waiting
-} io_state_e;
+#include "transaction_types.h"
 
 /**
  * Enumeration with expected INS of APDU commands.
@@ -24,18 +16,6 @@ typedef enum {
     SIGN_TX = 0x02,        /// sign transaction with BIP44 path and return signature
     GET_PUBLIC_KEY = 0x04  /// public key of corresponding BIP44 path and return uncompressed public key
 } command_e;
-
-/**
- * Structure with fields of APDU command.
- */
-typedef struct {
-    uint8_t cla;    /// Instruction class
-    command_e ins;  /// Instruction code
-    uint8_t p1;     /// Instruction parameter 1
-    uint8_t p2;     /// Instruction parameter 2
-    uint8_t lc;     /// Length of command data
-    uint8_t *data;  /// Command data
-} command_t;
 
 /**
  * Enumeration with parsing state.

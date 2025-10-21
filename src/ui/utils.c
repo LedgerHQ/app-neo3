@@ -2,7 +2,7 @@
 
 #include "utils.h"
 #include "types.h"
-#include "common/base58.h"
+#include "base58.h"
 
 #include <string.h>
 

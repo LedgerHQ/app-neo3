@@ -1,5 +1,4 @@
 /*****************************************************************************
- *   Ledger App Boilerplate.
  *   (c) 2020 Ledger SAS.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,26 +14,30 @@
  *  limitations under the License.
  *****************************************************************************/
 
-#include <stddef.h>   // size_t
-#include <stdint.h>   // uint*_t
-#include <stdbool.h>  // bool
+#include <stdint.h>  // uint*_t
+#include <stddef.h>  // size_t
+#include "app_read.h"
 
-#include "parser.h"
-#include "types.h"
-#include "offsets.h"
+int16_t read_s16_be(const uint8_t *ptr, size_t offset) {
+    return (int16_t) read_u16_be(ptr, offset);
+}
 
-bool apdu_parser(command_t *cmd, uint8_t *buf, size_t buf_len) {
-    // Check minimum length and Lc field of APDU command
-    if (buf_len < OFFSET_CDATA || buf_len - OFFSET_CDATA != buf[OFFSET_LC]) {
-        return false;
-    }
+int32_t read_s32_be(const uint8_t *ptr, size_t offset) {
+    return (int32_t) read_u32_be(ptr, offset);
+}
 
-    cmd->cla = buf[OFFSET_CLA];
-    cmd->ins = (command_e) buf[OFFSET_INS];
-    cmd->p1 = buf[OFFSET_P1];
-    cmd->p2 = buf[OFFSET_P2];
-    cmd->lc = buf[OFFSET_LC];
-    cmd->data = (buf[OFFSET_LC] > 0) ? buf + OFFSET_CDATA : NULL;
+int64_t read_s64_be(const uint8_t *ptr, size_t offset) {
+    return (int64_t) read_u64_be(ptr, offset);
+}
 
-    return true;
+int16_t read_s16_le(const uint8_t *ptr, size_t offset) {
+    return (int64_t) read_u16_le(ptr, offset);
+}
+
+int32_t read_s32_le(const uint8_t *ptr, size_t offset) {
+    return (int32_t) read_u32_le(ptr, offset);
+}
+
+int64_t read_s64_le(const uint8_t *ptr, size_t offset) {
+    return (int64_t) read_u64_le(ptr, offset);
 }

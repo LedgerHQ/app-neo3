@@ -30,9 +30,9 @@
 #include "io.h"
 #include "sw.h"
 #include "crypto.h"
-#include "common/buffer.h"
-#include "common/bip44.h"
-#include "helper/send_response.h"
+#include "app_buffer.h"
+#include "bip44.h"
+#include "send_response.h"
 #include "ui_get_public_key.h"
 
 int handler_get_public_key(buffer_t *cdata, bool show_on_screen) {

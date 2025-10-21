@@ -28,10 +28,10 @@
 #include "sw.h"
 #include "globals.h"
 #include "crypto.h"
-#include "common/buffer.h"
-#include "common/bip44.h"
-#include "transaction/transaction_types.h"
-#include "transaction/deserialize.h"
+#include "app_buffer.h"
+#include "bip44.h"
+#include "transaction_types.h"
+#include "deserialize.h"
 
 int handler_sign_tx(buffer_t *cdata, uint8_t chunk, bool more) {
 
@@ -46,7 +46,7 @@ int handler_sign_tx(buffer_t *cdata, uint8_t chunk, bool more) {
         }
 
         G_context.state = STATE_BIP44_OK;
-        return io_send_sw(SW_OK);
+        return io_send_sw(SWO_SUCCESS);
     } else if (chunk == 1) {
         if (G_context.req_type != CONFIRM_TRANSACTION && G_context.state != STATE_BIP44_OK) {
             return io_send_sw(SW_BAD_STATE);
@@ -56,7 +56,7 @@ int handler_sign_tx(buffer_t *cdata, uint8_t chunk, bool more) {
             return io_send_sw(SW_MAGIC_PARSING_FAIL);
         }
         G_context.state = STATE_MAGIC_OK;
-        return io_send_sw(SW_OK);
+        return io_send_sw(SWO_SUCCESS);
     } else {  // Receive transaction
         if (G_context.req_type != CONFIRM_TRANSACTION && G_context.state != STATE_MAGIC_OK) {
             return io_send_sw(SW_BAD_STATE);
@@ -70,7 +70,7 @@ int handler_sign_tx(buffer_t *cdata, uint8_t chunk, bool more) {
 
             G_context.tx_info.raw_tx_len += cdata->size;
 
-            return io_send_sw(SW_OK);
+            return io_send_sw(SWO_SUCCESS);
         } else {  // Last APDU, let's parse and sign
             if (G_context.tx_info.raw_tx_len + cdata->size > MAX_TRANSACTION_LEN ||
                 !buffer_move(cdata, G_context.tx_info.raw_tx + G_context.tx_info.raw_tx_len, cdata->size)) {
@@ -85,7 +85,7 @@ int handler_sign_tx(buffer_t *cdata, uint8_t chunk, bool more) {
             PRINTF("Parsing status: %d.\n", status);
             if (status != PARSING_OK) {
                 char status_char[1] = {(uint8_t) status};
-                return io_send_response(&(const buffer_t){.ptr = (unsigned char *) status_char, .size = 1, .offset = 0},
+                return io_send_response_buffer(&(const buffer_t){.ptr = (unsigned char *) status_char, .size = 1, .offset = 0},
                                         SW_TX_PARSING_FAIL);
             }
 

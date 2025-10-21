@@ -19,120 +19,60 @@ ifeq ($(BOLOS_SDK),)
 $(error Environment variable BOLOS_SDK is not set)
 endif
 
-include $(BOLOS_SDK)/Makefile.defines
+include $(BOLOS_SDK)/Makefile.target
 
-APP_LOAD_PARAMS = --curve secp256r1
-ifeq ($(TARGET_NAME),$(filter $(TARGET_NAME),TARGET_NANOX TARGET_STAX TARGET_FLEX))
-APP_LOAD_PARAMS += --appFlags 0x200  # APPLICATION_FLAG_BOLOS_SETTINGS
-else
-APP_LOAD_PARAMS += --appFlags 0x000
-endif
-APP_LOAD_PARAMS += --path "44'/888'"
-APP_LOAD_PARAMS += $(COMMON_LOAD_PARAMS)
+########################################
+#        Mandatory configuration       #
+########################################
 
-APPNAME      = "NEO N3"
+# Enabling DEBUG flag will enable PRINTF and disable optimizations
+DEBUG = 0
+
+# Application name
+APPNAME = "NEO N3"
+
+# Application version
 APPVERSION_M = 0
 APPVERSION_N = 5
 APPVERSION_P = 0
 APPVERSION   = "$(APPVERSION_M).$(APPVERSION_N).$(APPVERSION_P)"
 
-ifeq ($(TARGET_NAME),TARGET_STAX)
-    ICONNAME=icons/stax_app_neo.gif
-else ifeq ($(TARGET_NAME),TARGET_FLEX)
-    ICONNAME=icons/flex_app_neo.gif
-else
-    ICONNAME=icons/nanox_app_neo.gif
-endif
-
-all: default
-
-DEFINES += $(DEFINES_LIB)
-CFLAGS += -DAPPNAME=\"$(APPNAME)\"  # hack because the app name contains a space
-DEFINES += APPVERSION=\"$(APPVERSION)\"
-DEFINES += MAJOR_VERSION=$(APPVERSION_M) MINOR_VERSION=$(APPVERSION_N) PATCH_VERSION=$(APPVERSION_P)
-DEFINES += OS_IO_SEPROXYHAL
-DEFINES += HAVE_SPRINTF
-DEFINES += HAVE_IO_USB HAVE_L4_USBLIB IO_USB_MAX_ENDPOINTS=6 IO_HID_EP_LENGTH=64 HAVE_USB_APDU
-DEFINES += USB_SEGMENT_SIZE=64
-DEFINES += BLE_SEGMENT_SIZE=32
-DEFINES += HAVE_WEBUSB WEBUSB_URL_SIZE_B=0 WEBUSB_URL=""
-
-# Bluetooth
-ifeq ($(TARGET_NAME),$(filter $(TARGET_NAME),TARGET_NANOX TARGET_STAX TARGET_FLEX))
-    DEFINES += HAVE_BLE BLE_COMMAND_TIMEOUT_MS=2000 HAVE_BLE_APDU
-endif
-
-# Screen size
-DEFINES += IO_SEPROXYHAL_BUFFER_SIZE_B=300
-
-# Graphical lib
-ifeq ($(TARGET_NAME),$(filter $(TARGET_NAME),TARGET_STAX TARGET_FLEX))
-    DEFINES += NBGL_QRCODE
-    SDK_SOURCE_PATH += qrcode
-else
-    DEFINES += HAVE_BAGL HAVE_UX_FLOW
-    DEFINES += HAVE_GLO096
-    DEFINES += BAGL_WIDTH=128 BAGL_HEIGHT=64
-    DEFINES += HAVE_BAGL_ELLIPSIS # long label truncation feature
-    DEFINES += HAVE_BAGL_FONT_OPEN_SANS_REGULAR_11PX
-    DEFINES += HAVE_BAGL_FONT_OPEN_SANS_EXTRABOLD_11PX
-    DEFINES += HAVE_BAGL_FONT_OPEN_SANS_LIGHT_16PX
-endif
-
-DEBUG = 0
-ifneq ($(DEBUG),0)
-    DEFINES += HAVE_PRINTF
-    DEFINES += PRINTF=mcu_usb_printf
-else
-        DEFINES += PRINTF\(...\)=
-endif
-
-ifneq ($(BOLOS_ENV),)
-$(info BOLOS_ENV=$(BOLOS_ENV))
-CLANGPATH := $(BOLOS_ENV)/clang-arm-fropi/bin/
-GCCPATH   := $(BOLOS_ENV)/gcc-arm-none-eabi-5_3-2016q1/bin/
-else
-$(info BOLOS_ENV is not set: falling back to CLANGPATH and GCCPATH)
-endif
-ifeq ($(CLANGPATH),)
-$(info CLANGPATH is not set: clang will be used from PATH)
-endif
-ifeq ($(GCCPATH),)
-$(info GCCPATH is not set: arm-none-eabi-* will be used from PATH)
-endif
-
-CC      := $(CLANGPATH)clang
-CFLAGS  += -O3 -Os
-AS      := $(GCCPATH)arm-none-eabi-gcc
-LD      := $(GCCPATH)arm-none-eabi-gcc
-LDFLAGS += -O3 -Os
-LDLIBS  += -lm -lgcc -lc
-
-include $(BOLOS_SDK)/Makefile.glyphs
-
+# Application source files
 APP_SOURCE_PATH += src
-SDK_SOURCE_PATH += lib_stusb lib_stusb_impl
 
-ifneq ($(TARGET_NAME),$(filter $(TARGET_NAME),TARGET_STAX TARGET_FLEX))
-SDK_SOURCE_PATH  += lib_ux
-endif
+# Application icons
+ICON_STAX = icons/stax_app_neo.gif
+ICON_NANOX = icons/nanox_app_neo.gif
+ICON_NANOSP = icons/nanox_app_neo.gif
+ICON_FLEX = icons/flex_app_neo.gif
 
+# Application allowed derivation curves.
+CURVE_APP_LOAD_PARAMS = secp256r1
+
+# Application allowed derivation paths.
+PATH_APP_LOAD_PARAMS = "44'/888'"
+
+# Setting to allow building variant applications
+VARIANT_PARAM = COIN
+VARIANT_VALUES = NEO3
+
+########################################
+#     Application custom permissions   #
+########################################
+# See SDK `include/appflags.h` for the purpose of each permission
 ifeq ($(TARGET_NAME),$(filter $(TARGET_NAME),TARGET_NANOX TARGET_STAX TARGET_FLEX))
-    SDK_SOURCE_PATH += lib_blewbxx lib_blewbxx_impl
+HAVE_APPLICATION_FLAG_BOLOS_SETTINGS = 1
 endif
 
-load: all
-	python3 -m ledgerblue.loadApp $(APP_LOAD_PARAMS)
+########################################
+# Application communication interfaces #
+########################################
+ENABLE_BLUETOOTH = 1
 
-load-offline: all
-	python3 -m ledgerblue.loadApp $(APP_LOAD_PARAMS) --offline
+########################################
+#         NBGL custom features         #
+########################################
+ENABLE_NBGL_QRCODE = 1
 
-delete:
-	python3 -m ledgerblue.deleteApp $(COMMON_DELETE_PARAMS)
+include $(BOLOS_SDK)/Makefile.standard_app
 
-include $(BOLOS_SDK)/Makefile.rules
-
-dep/%.d: %.c Makefile
-
-listvariants:
-	@echo VARIANTS COIN NEO3

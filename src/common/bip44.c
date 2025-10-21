@@ -1,10 +1,10 @@
-#include "buffer.h"
+#include "app_buffer.h"
 #include "sw.h"         // status words
 #include "constants.h"  // BIP44 constants
 
 bool buffer_read_and_validate_bip44(buffer_t *in, uint32_t *bip44path_out, uint16_t *status_out) {
     if (in->size < BIP44_BYTE_LENGTH) {
-        *status_out = SW_WRONG_DATA_LENGTH;
+        *status_out = SWO_WRONG_DATA_LENGTH;
         return false;
     }
 
