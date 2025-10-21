@@ -4,7 +4,6 @@ import enum
 import struct
 import logging
 
-from apps.neo_n3_cmd import Neo_n3_Command
 from apps.neo_n3_cmd_builder import InsType, Neo_n3_CommandBuilder
 from apps.exception import errors, DeviceException
 
@@ -101,7 +100,7 @@ def serialize(cla: int, ins: Union[int, enum.IntEnum], p1: int = 0, p2: int = 0,
     return header + cdata
 
 
-def send_bip44_and_magic(backend: BackendInterface):
+def send_bip44_and_magic(backend: BackendInterface) -> None:
     backend.exchange_raw(serialize(cla=CLA,
                                    ins=InsType.INS_SIGN_TX,
                                    p1=0x00,
@@ -124,7 +123,7 @@ def send_raw_tx_data(backend: BackendInterface, data: bytes) -> RAPDU:
                                           cdata=data))
 
 
-def test_invalid_version_value(backend, firmware):
+def test_invalid_version_value(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     version = struct.pack("B", 1)  # version should be 0
     backend.raise_policy = RaisePolicy.RAISE_NOTHING
@@ -133,7 +132,7 @@ def test_invalid_version_value(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.VERSION_VALUE_ERROR
 
 
-def test_invalid_nonce_parsing(backend, firmware):
+def test_invalid_nonce_parsing(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     version = b'\x00'
     nonce = b'\x00'  # a valid nonce would be 4 bytes
@@ -143,7 +142,7 @@ def test_invalid_nonce_parsing(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.NONCE_PARSING_ERROR
 
 
-def test_system_fee_parsing(backend, firmware):
+def test_system_fee_parsing(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     version = b'\x00'
     nonce = b'\x00' * 4
@@ -154,7 +153,7 @@ def test_system_fee_parsing(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.SYSTEM_FEE_PARSING_ERROR
 
 
-def test_system_fee_value(backend, firmware):
+def test_system_fee_value(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     version = b'\x00'
     nonce = b'\x00' * 4
@@ -165,7 +164,7 @@ def test_system_fee_value(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.SYSTEM_FEE_VALUE_ERROR
 
 
-def test_network_fee_parsing(backend, firmware):
+def test_network_fee_parsing(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     version = b'\x00'
     nonce = b'\x00' * 4
@@ -177,7 +176,7 @@ def test_network_fee_parsing(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.NETWORK_FEE_PARSING_ERROR
 
 
-def test_network_fee_value(backend, firmware):
+def test_network_fee_value(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     version = b'\x00'
     nonce = b'\x00' * 4
@@ -189,7 +188,7 @@ def test_network_fee_value(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.NETWORK_FEE_VALUE_ERROR
 
 
-def test_valid_until_block(backend, firmware):
+def test_valid_until_block(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     version = b'\x00'
     nonce = b'\x00' * 4
@@ -202,7 +201,7 @@ def test_valid_until_block(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.VALID_UNTIL_BLOCK_PARSING_ERROR
 
 
-def test_signers_length(backend, firmware):
+def test_signers_length(backend: BackendInterface) -> None:
     # by not adding a 'varint' to the data to indicate the signers length, we should fail to parse
     send_bip44_and_magic(backend)
     version = b'\x00'
@@ -216,7 +215,7 @@ def test_signers_length(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.SIGNER_LENGTH_PARSING_ERROR
 
 
-def test_signers_length2(backend, firmware):
+def test_signers_length2(backend: BackendInterface) -> None:
     # test signer length too large (3 vs max 2 allowed)
     send_bip44_and_magic(backend)
     version = b'\x00'
@@ -231,7 +230,7 @@ def test_signers_length2(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.SIGNER_LENGTH_VALUE_ERROR
 
 
-def test_signers_account(backend, firmware):
+def test_signers_account(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     version = b'\x00'
     nonce = b'\x00' * 4
@@ -246,7 +245,7 @@ def test_signers_account(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.SIGNER_ACCOUNT_PARSING_ERROR
 
 
-def test_signers_scope(backend, firmware):
+def test_signers_scope(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     version = b'\x00'
     nonce = b'\x00' * 4
@@ -263,7 +262,7 @@ def test_signers_scope(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.SIGNER_SCOPE_PARSING_ERROR
 
 
-def test_signers_scope_global(backend, firmware):
+def test_signers_scope_global(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     version = b'\x00'
     nonce = b'\x00' * 4
@@ -283,7 +282,7 @@ def test_signers_scope_global(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.SIGNER_SCOPE_VALUE_ERROR_GLOBAL_FLAG
 
 
-def test_signers_scope_contracts(backend, firmware):
+def test_signers_scope_contracts(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     version = b'\x00'
     nonce = b'\x00' * 4
@@ -305,7 +304,7 @@ def test_signers_scope_contracts(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.SIGNER_ALLOWED_CONTRACTS_LENGTH_VALUE_ERROR
 
 
-def test_signers_scope_contracts_no_data(backend, firmware):
+def test_signers_scope_contracts_no_data(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     version = b'\x00'
     nonce = b'\x00' * 4
@@ -327,7 +326,7 @@ def test_signers_scope_contracts_no_data(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.SIGNER_ALLOWED_CONTRACT_PARSING_ERROR
 
 
-def test_signers_scope_groups(backend, firmware):
+def test_signers_scope_groups(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     version = b'\x00'
     nonce = b'\x00' * 4
@@ -348,7 +347,7 @@ def test_signers_scope_groups(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.SIGNER_ALLOWED_GROUPS_LENGTH_VALUE_ERROR
 
 
-def test_signers_scope_groups_no_data(backend, firmware):
+def test_signers_scope_groups_no_data(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     version = b'\x00'
     nonce = b'\x00' * 4
@@ -370,7 +369,7 @@ def test_signers_scope_groups_no_data(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.SIGNER_ALLOWED_CONTRACT_PARSING_ERROR
 
 
-def test_attributes(backend, firmware):
+def test_attributes(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     version = b'\x00'
     nonce = b'\x00' * 4
@@ -390,7 +389,7 @@ def test_attributes(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.ATTRIBUTES_LENGTH_PARSING_ERROR
 
 
-def test_attributes_value(backend, firmware):
+def test_attributes_value(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     signer = Signer(account=types.UInt160.from_string("d7678dd97c000be3f33e9362e673101bac4ca654"),
                     scope=WitnessScope.CALLED_BY_ENTRY)
@@ -409,7 +408,7 @@ def test_attributes_value(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.ATTRIBUTES_LENGTH_VALUE_ERROR
 
 
-def test_attributes_unsupported(backend, firmware):
+def test_attributes_unsupported(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     signer = Signer(account=types.UInt160.from_string("d7678dd97c000be3f33e9362e673101bac4ca654"),
                     scope=WitnessScope.CALLED_BY_ENTRY)
@@ -428,7 +427,7 @@ def test_attributes_unsupported(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.ATTRIBUTES_UNSUPPORTED_TYPE
 
 
-def test_attributes_duplicates(backend, firmware):
+def test_attributes_duplicates(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     signer = Signer(account=types.UInt160.from_string("d7678dd97c000be3f33e9362e673101bac4ca654"),
                     scope=WitnessScope.CALLED_BY_ENTRY)
@@ -447,7 +446,7 @@ def test_attributes_duplicates(backend, firmware):
     assert int.from_bytes(rapdu.data, 'little', signed=True) == ParserStatus.ATTRIBUTES_DUPLICATE_TYPE
 
 
-def test_script(backend, firmware):
+def test_script(backend: BackendInterface) -> None:
     send_bip44_and_magic(backend)
     signer = Signer(account=types.UInt160.from_string("d7678dd97c000be3f33e9362e673101bac4ca654"),
                     scope=WitnessScope.CALLED_BY_ENTRY)
