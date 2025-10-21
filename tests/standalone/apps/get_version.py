@@ -2,7 +2,7 @@ from typing import Tuple
 from pathlib import Path
 import os
 
-makefile_relative_path = "../../Makefile"
+makefile_relative_path = "../../../Makefile"
 
 makefile_path = (Path(os.path.dirname(os.path.realpath(__file__))) / Path(makefile_relative_path)).resolve()
 

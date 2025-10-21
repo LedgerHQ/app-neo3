@@ -30,3 +30,6 @@ cx_err_t cx_sha256_init_no_throw(cx_sha256_t *hash) {
 cx_err_t cx_hash_no_throw(cx_hash_t *hash, uint32_t mode, const uint8_t *in, size_t len, uint8_t *out, size_t out_len) {
     return CX_OK;
 }
+
+void assert_exit(bool confirm) {
+}

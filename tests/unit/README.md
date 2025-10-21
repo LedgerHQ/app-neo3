@@ -13,23 +13,23 @@ and for code coverage generation:
 
 ## Overview
 
-In `unit-tests` folder, compile with
+In `tests/unit` folder, compile with
 
-```
+```bash
 cmake -Bbuild -H. && make -C build
 ```
 
 and run tests with
 
-```
+```bash
 CTEST_OUTPUT_ON_FAILURE=1 make -C build test
 ```
 
 ## Generate code coverage
 
-Just execute in `unit-tests` folder
+Just execute in `tests/unit` folder
 
-```
+```bash
 ./gen_coverage.sh
 ```
 

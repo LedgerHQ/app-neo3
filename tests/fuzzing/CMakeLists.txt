@@ -4,15 +4,25 @@ project(NeoFuzzer VERSION 0.1.9 LANGUAGES C)
 
 set(CMAKE_C_STANDARD 11)
 
-# BOLOS SDK
 set(BOLOS_SDK $ENV{BOLOS_SDK})
+set(APP_SRC_DIR "../../src")
+
+# BOLOS SDK
 add_compile_definitions(IO_HID_EP_LENGTH=64)
 
-add_compile_definitions(HAVE_ECC HAVE_HASH HAVE_SHA256 HAVE_RIPEMD160)
+add_compile_definitions(
+    HAVE_ECC
+    HAVE_HASH
+    HAVE_SHA256
+    HAVE_RIPEMD160
+    OS_IO_SEPH_BUFFER_SIZE=300
+    )
 include_directories(.
-        ../src/lib
         "${BOLOS_SDK}/include"
+        "${BOLOS_SDK}/target/stax/include"
         "${BOLOS_SDK}/lib_cxng/include"
+        "${BOLOS_SDK}/io/include"
+        "${BOLOS_SDK}/io_legacy/include"
 )
 
 add_compile_options(-g -ggdb2 -O3)
@@ -31,8 +41,6 @@ if(CODE_COVERAGE)
 endif()
 
 # Fuzzer target
-set(APP_SRC_DIR "../src")
-
 set(APP_SOURCES
     ${APP_SRC_DIR}/transaction/deserialize.c
     ${APP_SRC_DIR}/transaction/deserialize.h
@@ -58,6 +66,6 @@ add_executable(fuzz_message
         ${APP_SOURCES}
 )
 
-target_include_directories(fuzz_message PUBLIC ../src)
+target_include_directories(fuzz_message PUBLIC ${APP_SRC_DIR})
 target_compile_options(fuzz_message PUBLIC -fsanitize=fuzzer,address,undefined -fno-sanitize-recover=undefined)
 target_link_options(fuzz_message PUBLIC -fsanitize=fuzzer,address,undefined -fno-sanitize-recover=undefined)
