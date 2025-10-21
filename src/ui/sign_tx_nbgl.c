@@ -241,7 +241,7 @@ void start_sign_tx_ui(void) {
     if (!G_context.tx_info.transaction.is_system_asset_transfer && !G_context.tx_info.transaction.is_vote_script &&
         !N_storage.scriptsAllowed) {
         // TODO: maybe add a mechanism to resume the transaction if the user allows the setting
-        nbgl_useCaseChoice(&C_Warning_64px,
+        nbgl_useCaseChoice(&LARGE_WARNING_ICON,
                            "Arbitrary contract\nscripts are not allowed.",
                            "Go to the Settings menu to\nenable the signing of such\ntransactions.\n\nThis "
                            "transaction\nwill be rejected.",
@@ -263,7 +263,7 @@ void start_sign_tx_ui(void) {
         nbgl_useCaseReview(
             TYPE_TRANSACTION,
             &content,
-            &C_icon_neo_n3_64x64,
+            &ICON_APP_HOME,
             review_title,
             NULL,
             review_final_long_press_text,

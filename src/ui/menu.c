@@ -244,7 +244,7 @@ void ui_menu_settings(bool confirm) {
 
 
     nbgl_useCaseHomeAndSettings(DISPLAYABLE_APPNAME, 
-                                &C_icon_neo_n3_64x64, 
+                                &ICON_APP_HOME, 
                                 NULL, 
                                 (confirm ? 0 : INIT_HOME_PAGE), 
                                 &settingContents, 

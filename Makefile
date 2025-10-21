@@ -33,7 +33,7 @@ APPNAME = "NEO N3"
 
 # Application version
 APPVERSION_M = 0
-APPVERSION_N = 5
+APPVERSION_N = 6
 APPVERSION_P = 0
 APPVERSION   = "$(APPVERSION_M).$(APPVERSION_N).$(APPVERSION_P)"
 
@@ -45,6 +45,7 @@ ICON_STAX = icons/stax_app_neo.gif
 ICON_NANOX = icons/nanox_app_neo.gif
 ICON_NANOSP = icons/nanox_app_neo.gif
 ICON_FLEX = icons/flex_app_neo.gif
+ICON_APEX_P = icons/apex_app_neo.png
 
 # Application allowed derivation curves.
 CURVE_APP_LOAD_PARAMS = secp256r1
@@ -60,7 +61,7 @@ VARIANT_VALUES = NEO3
 #     Application custom permissions   #
 ########################################
 # See SDK `include/appflags.h` for the purpose of each permission
-ifeq ($(TARGET_NAME),$(filter $(TARGET_NAME),TARGET_NANOX TARGET_STAX TARGET_FLEX))
+ifeq ($(TARGET_NAME),$(filter $(TARGET_NAME),TARGET_NANOX TARGET_STAX TARGET_FLEX TARGET_APEX_P))
 HAVE_APPLICATION_FLAG_BOLOS_SETTINGS = 1
 endif
 

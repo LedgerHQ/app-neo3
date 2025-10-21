@@ -97,7 +97,7 @@ static void ui_get_public_key_nbgl(void) {
     nbgl_useCaseAddressReview(
         g_address,
         NULL,
-        &C_icon_neo_n3_64x64,
+        &ICON_APP_HOME,
         "Verify " APPNAME "\naddress",
         NULL,
         review_choice);

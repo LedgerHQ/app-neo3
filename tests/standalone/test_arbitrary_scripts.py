@@ -9,6 +9,7 @@ from ecdsa.util import sigdecode_der
 from ragger.backend import RaisePolicy
 from ragger.backend.interface import BackendInterface
 from ragger.navigator import Navigator, NavInsID, NavIns
+from ragger.firmware.touch.positions import POSITIONS
 
 from apps.neo_n3_cmd import Neo_n3_Command
 
@@ -62,8 +63,7 @@ def test_arbitrary_scripts_allowed(backend: BackendInterface, navigator: Navigat
                                                   screen_change_before_first_instruction=False)
     else:
         nav_ins = [NavInsID.USE_CASE_HOME_SETTINGS,
-
-                   NavIns(NavInsID.TOUCH, (350,115)),
+                   NavIns(NavInsID.TOUCH, POSITIONS["ChoiceList"][backend.device.type][1]),
                    NavInsID.USE_CASE_SETTINGS_MULTI_PAGE_EXIT]
         navigator.navigate_and_compare(ROOT_SCREENSHOT_PATH, test_name + "_0", nav_ins, screen_change_before_first_instruction=False)
 
