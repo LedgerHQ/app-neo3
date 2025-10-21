@@ -39,6 +39,6 @@ def test_wrong_p1p2(backend: BackendInterface) -> None:
 def test_wrong_data_length(backend: BackendInterface) -> None:
     backend.raise_policy = RaisePolicy.RAISE_NOTHING
     # APDUs must be at least 5 bytes: CLA, INS, P1, P2, Lc.
-    rapdu = backend.exchange_raw(b"8000")
+    rapdu = backend.exchange_raw(bytes.fromhex("8000"))
 
     assert DeviceException.exc[rapdu.status] == errors.WrongDataLengthError

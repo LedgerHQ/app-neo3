@@ -6,7 +6,7 @@
 
 #include <cmocka.h>
 
-#include "common/buffer.h"
+#include "app_buffer.h"
 
 static void test_buffer_can_read(void **state) {
     (void) state;
@@ -99,15 +99,15 @@ static void test_buffer_read(void **state) {
     };
     buffer_t buf_varint = {.ptr = temp_varint, .size = sizeof(temp_varint), .offset = 0};
     uint64_t varint = 0;
-    assert_true(buffer_read_varint(&buf_varint, &varint));
+    assert_true(buffer_read_uvarint(&buf_varint, &varint));
     assert_int_equal(varint, 0xFC);
-    assert_true(buffer_read_varint(&buf_varint, &varint));
+    assert_true(buffer_read_uvarint(&buf_varint, &varint));
     assert_int_equal(varint, 0x0100);
-    assert_true(buffer_read_varint(&buf_varint, &varint));
+    assert_true(buffer_read_uvarint(&buf_varint, &varint));
     assert_int_equal(varint, 0x03020100);
-    assert_true(buffer_read_varint(&buf_varint, &varint));
+    assert_true(buffer_read_uvarint(&buf_varint, &varint));
     assert_int_equal(varint, 0x0706050403020100);
-    assert_false(buffer_read_varint(&buf_varint, &varint));
+    assert_false(buffer_read_uvarint(&buf_varint, &varint));
 }
 
 static void test_buffer_copy(void **state) {

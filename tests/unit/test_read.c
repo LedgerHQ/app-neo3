@@ -7,7 +7,7 @@
 
 #include <cmocka.h>
 
-#include "common/read.h"
+#include "app_read.h"
 
 static void test_read(void **state) {
     (void) state;

@@ -7,7 +7,7 @@
 
 #include <cmocka.h>
 
-#include "common/base58.h"
+#include "base58.h"
 
 static void test_base58(void **state) {
     (void) state;

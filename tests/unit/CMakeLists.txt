@@ -35,23 +35,28 @@ endif()
 
 add_compile_definitions(TEST)
 
+set(BOLOS_SDK $ENV{BOLOS_SDK})
 set(APP_SRC_DIR "../../src")
-include_directories(${APP_SRC_DIR})
+
+include_directories(
+  ${APP_SRC_DIR}
+  ${APP_SRC_DIR}/common
+  ${APP_SRC_DIR}/transaction
+  ${BOLOS_SDK}/lib_standard_app
+)
 
 add_executable(test_base58 test_base58.c)
 add_executable(test_buffer test_buffer.c)
 add_executable(test_format test_format.c)
 add_executable(test_read test_read.c)
 add_executable(test_write test_write.c)
-add_executable(test_apdu_parser test_apdu_parser.c)
 
-add_library(base58 SHARED ${APP_SRC_DIR}/common/base58.c)
-add_library(buffer SHARED ${APP_SRC_DIR}/common/buffer.c)
-add_library(read SHARED ${APP_SRC_DIR}/common/read.c)
-add_library(write SHARED ${APP_SRC_DIR}/common/write.c)
-add_library(format SHARED ${APP_SRC_DIR}/common/format.c)
-add_library(varint SHARED ${APP_SRC_DIR}/common/varint.c)
-add_library(apdu_parser SHARED ${APP_SRC_DIR}/apdu/parser.c)
+add_library(base58 SHARED ${BOLOS_SDK}/lib_standard_app/base58.c)
+add_library(buffer SHARED ${BOLOS_SDK}/lib_standard_app/buffer.c ${BOLOS_SDK}/lib_standard_app/bip32.c ${APP_SRC_DIR}/common/app_buffer.c)
+add_library(read SHARED ${BOLOS_SDK}/lib_standard_app/read.c ${APP_SRC_DIR}/common/app_read.c)
+add_library(write SHARED ${BOLOS_SDK}/lib_standard_app/write.c)
+add_library(format SHARED ${BOLOS_SDK}/lib_standard_app/format.c ${APP_SRC_DIR}/common/app_format.c)
+add_library(varint SHARED ${BOLOS_SDK}/lib_standard_app/varint.c)
 add_library(transaction_deserialize ${APP_SRC_DIR}/transaction/deserialize.c)
 
 target_link_libraries(test_base58 PUBLIC cmocka gcov base58)
@@ -59,11 +64,9 @@ target_link_libraries(test_buffer PUBLIC cmocka gcov buffer varint write read)
 target_link_libraries(test_format PUBLIC cmocka gcov format)
 target_link_libraries(test_read PUBLIC cmocka gcov read)
 target_link_libraries(test_write PUBLIC cmocka gcov write)
-target_link_libraries(test_apdu_parser PUBLIC cmocka gcov apdu_parser)
 
 add_test(test_base58 test_base58)
 add_test(test_buffer test_buffer)
 add_test(test_format test_format)
 add_test(test_write test_write)
-add_test(test_apdu_parser test_apdu_parser)
 add_test(test_read test_read)

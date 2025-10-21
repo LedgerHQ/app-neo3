@@ -7,7 +7,7 @@
 
 #include <cmocka.h>
 
-#include "common/format.h"
+#include "app_format.h"
 
 static void test_format_i64(void **state) {
     (void) state;
@@ -50,36 +50,36 @@ static void test_format_u64(void **state) {
     assert_false(format_u64(temp, sizeof(temp) - 5, value));
 }
 
-static void test_format_fpu64(void **state) {
+static void test_format_amount(void **state) {
     (void) state;
 
     char temp[22] = {0};
 
     uint64_t amount = 100000000ull;  // satoshi
     memset(temp, 0, sizeof(temp));
-    assert_true(format_fpu64(temp, sizeof(temp), amount, 8));
+    assert_true(format_amount(temp, sizeof(temp), amount, 8));
     assert_string_equal(temp, "1.00000000");  // BTC
 
     amount = 24964823ull;  // satoshi
     memset(temp, 0, sizeof(temp));
-    assert_true(format_fpu64(temp, sizeof(temp), amount, 8));
+    assert_true(format_amount(temp, sizeof(temp), amount, 8));
     assert_string_equal(temp, "0.24964823");  // BTC
 
     amount = 100ull;  // satoshi
     memset(temp, 0, sizeof(temp));
-    assert_true(format_fpu64(temp, sizeof(temp), amount, 8));
+    assert_true(format_amount(temp, sizeof(temp), amount, 8));
     assert_string_equal(temp, "0.00000100");  // BTC
     // buffer too small
-    assert_false(format_fpu64(temp, sizeof(temp) - 16, amount, 8));
+    assert_false(format_amount(temp, sizeof(temp) - 16, amount, 8));
 
     char temp2[50] = {0};
 
     amount = 1000000000000000000ull;  // wei
-    assert_true(format_fpu64(temp2, sizeof(temp2), amount, 18));
+    assert_true(format_amount(temp2, sizeof(temp2), amount, 18));
     assert_string_equal(temp2, "1.000000000000000000");  // ETH
 
     // buffer too small
-    assert_false(format_fpu64(temp2, sizeof(temp2) - 20, amount, 18));
+    assert_false(format_amount(temp2, sizeof(temp2) - 20, amount, 18));
 }
 
 static void test_format_hex(void **state) {
@@ -97,7 +97,7 @@ static void test_format_hex(void **state) {
 int main() {
     const struct CMUnitTest tests[] = {cmocka_unit_test(test_format_i64),
                                        cmocka_unit_test(test_format_u64),
-                                       cmocka_unit_test(test_format_fpu64),
+                                       cmocka_unit_test(test_format_amount),
                                        cmocka_unit_test(test_format_hex)};
 
     return cmocka_run_group_tests(tests, NULL, NULL);
