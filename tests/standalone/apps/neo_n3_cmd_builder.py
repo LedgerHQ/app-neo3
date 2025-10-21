@@ -1,10 +1,10 @@
 import enum
 import logging
 import struct
-from typing import List, Tuple, Union, Iterator, cast
+from typing import Tuple, Union, Iterator, cast
 
 from ragger.bip import pack_derivation_path
-from neo3.network import node, payloads
+from neo3.network.payloads.transaction import Transaction
 from neo3.core import serialization
 
 MAX_APDU_LEN: int = 255
@@ -21,7 +21,7 @@ def chunkify(data: bytes, chunk_len: int) -> Iterator[Tuple[bool, bytes]]:
     remaining: int = size % chunk_len
     offset: int = 0
 
-    for i in range(chunk):
+    for _ in range(chunk):
         yield False, data[offset:offset + chunk_len]
         offset += chunk_len
 
@@ -160,10 +160,10 @@ class Neo_n3_CommandBuilder:
         return self.serialize(cla=self.CLA,
                               ins=InsType.INS_GET_PUBLIC_KEY,
                               p1=0x00,
-                              p2=int(display == True),
+                              p2=int(display is True),
                               cdata=pack_derivation_path(bip44_path)[1:]) # No length prefix
 
-    def sign_tx(self, bip44_path: str, transaction: payloads.transaction.Transaction, network_magic: int
+    def sign_tx(self, bip44_path: str, transaction: Transaction, network_magic: int
                 ) -> Iterator[Tuple[bool, bytes]]:
         """Command builder for INS_SIGN_TX.
 
@@ -205,9 +205,8 @@ class Neo_n3_CommandBuilder:
                                            p2=0x00,
                                            cdata=chunk)
                 return
-            else:
-                yield False, self.serialize(cla=self.CLA,
-                                            ins=InsType.INS_SIGN_TX,
-                                            p1=i + 2,
-                                            p2=0x80,
-                                            cdata=chunk)
+            yield False, self.serialize(cla=self.CLA,
+                                        ins=InsType.INS_SIGN_TX,
+                                        p1=i + 2,
+                                        p2=0x80,
+                                        cdata=chunk)

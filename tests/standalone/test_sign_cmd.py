@@ -10,13 +10,14 @@ from ragger.backend.interface import BackendInterface
 from ragger.navigator import Navigator, NavInsID
 from ragger.navigator.navigation_scenario import NavigateWithScenario
 
-from apps.neo_n3_cmd import Neo_n3_Command
 from neo3.network.payloads.transaction import Transaction
 from neo3.network.payloads.verification import Witness, WitnessScope, Signer
 from neo3.core import types, serialization
 from neo3 import vm
 from neo3.wallet.utils import address_to_script_hash
 from neo3.api.wrappers import NeoToken
+
+from apps.neo_n3_cmd import Neo_n3_Command
 
 
 ROOT_SCREENSHOT_PATH = Path(__file__).parent.resolve()

@@ -13,7 +13,7 @@ def get_version_from_makefile() -> Tuple[int, int, int]:
     APPVERSION_M = -1
     APPVERSION_N = -1
     APPVERSION_P = -1
-    with open(makefile_path) as myfile:
+    with open(makefile_path, encoding="utf-8") as myfile:
         for line in myfile:
             if line.startswith("APPVERSION_M"):
                 _, var = line.partition("=")[::2]

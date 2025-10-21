@@ -2,10 +2,7 @@ from typing import Union, cast, List, Tuple
 import re
 import enum
 import struct
-import logging
-
-from apps.neo_n3_cmd_builder import InsType, Neo_n3_CommandBuilder
-from apps.exception import errors, DeviceException
+from pathlib import Path
 
 from ragger.backend.interface import BackendInterface, RAPDU
 from ragger.backend import RaisePolicy
@@ -15,7 +12,9 @@ from neo3.network.payloads.transaction import Transaction, HighPriorityAttribute
 from neo3.network.payloads.verification import WitnessScope, Signer
 from neo3.core import types, serialization
 
-from pathlib import Path
+from apps.neo_n3_cmd_builder import InsType, Neo_n3_CommandBuilder
+from apps.exception import errors, DeviceException
+
 
 CLA = Neo_n3_CommandBuilder.CLA
 bip44_path: str = "m/44'/888'/0'/0/0"
@@ -62,7 +61,7 @@ def parse_parser_codes(path: Path) -> List[Tuple[str, int]]:
     if not path.is_file():
         raise FileNotFoundError(f"Can't find file: '{path}'")
 
-    with open(str(path.absolute()), 'r') as f:
+    with open(str(path.absolute()), encoding="utf-8") as f:
         lines = f.readlines()
 
     include = False

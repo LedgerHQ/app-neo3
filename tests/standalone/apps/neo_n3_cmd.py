@@ -2,12 +2,12 @@ import struct
 from typing import Tuple, Generator
 from contextlib import contextmanager
 
+from neo3.network import payloads
+
 from ragger.backend.interface import BackendInterface, RAPDU
 
-from .neo_n3_cmd_builder import Neo_n3_CommandBuilder, InsType
-
+from .neo_n3_cmd_builder import Neo_n3_CommandBuilder
 from .transaction import Transaction
-from neo3.network import payloads
 
 
 class Neo_n3_Command:
@@ -30,7 +30,7 @@ class Neo_n3_Command:
         #            version (var) ||
         offset: int = 0
 
-        format_id: int = response[offset]
+        # format_id: int = response[offset]
         offset += 1
         app_name_len: int = response[offset]
         offset += 1
@@ -79,7 +79,10 @@ class Neo_n3_Command:
             yield response
 
     @contextmanager
-    def sign_tx(self, bip44_path: str, transaction: payloads.transaction.Transaction, network_magic: int) -> Generator[RAPDU, None, None]:
+    def sign_tx(self,
+                bip44_path: str,
+                transaction: payloads.transaction.Transaction,
+                network_magic: int) -> Generator[RAPDU, None, None]:
         for is_last, chunk in self.builder.sign_tx(bip44_path=bip44_path,
                                                    transaction=transaction,
                                                    network_magic=network_magic):

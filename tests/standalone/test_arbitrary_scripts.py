@@ -11,19 +11,21 @@ from ragger.backend.interface import BackendInterface
 from ragger.navigator import Navigator, NavInsID, NavIns
 from ragger.firmware.touch.positions import POSITIONS
 
-from apps.neo_n3_cmd import Neo_n3_Command
-
 from neo3.network.payloads.transaction import Transaction
 from neo3.network.payloads.verification import Witness, WitnessScope, Signer
 from neo3.core import types, serialization
 from neo3 import vm
 from neo3.api.wrappers import NeoToken
 
+from apps.neo_n3_cmd import Neo_n3_Command
+
 
 ROOT_SCREENSHOT_PATH = Path(__file__).parent.resolve()
 
 
-def test_arbitrary_scripts_allowed(backend: BackendInterface, navigator: Navigator, test_name: str) -> None:
+def test_arbitrary_scripts_allowed(backend: BackendInterface,
+                                   navigator: Navigator,
+                                   test_name: str) -> None:
     client = Neo_n3_Command(backend)
 
     bip44_path: str = "m/44'/888'/0'/0/0"
@@ -56,7 +58,8 @@ def test_arbitrary_scripts_allowed(backend: BackendInterface, navigator: Navigat
     # Change setting
     if backend.device.is_nano:
         navigator.navigate_until_text_and_compare(navigate_instruction=NavInsID.RIGHT_CLICK,
-                                                  validation_instructions=[NavInsID.BOTH_CLICK, NavInsID.BOTH_CLICK],
+                                                  validation_instructions=[NavInsID.BOTH_CLICK,
+                                                                           NavInsID.BOTH_CLICK],
                                                   text="Setting",
                                                   path=ROOT_SCREENSHOT_PATH,
                                                   test_case_name=test_name + "_0",
@@ -65,7 +68,10 @@ def test_arbitrary_scripts_allowed(backend: BackendInterface, navigator: Navigat
         nav_ins = [NavInsID.USE_CASE_HOME_SETTINGS,
                    NavIns(NavInsID.TOUCH, POSITIONS["ChoiceList"][backend.device.type][1]),
                    NavInsID.USE_CASE_SETTINGS_MULTI_PAGE_EXIT]
-        navigator.navigate_and_compare(ROOT_SCREENSHOT_PATH, test_name + "_0", nav_ins, screen_change_before_first_instruction=False)
+        navigator.navigate_and_compare(ROOT_SCREENSHOT_PATH,
+                                       test_name + "_0",
+                                       nav_ins,
+                                       screen_change_before_first_instruction=False)
 
     with client.sign_vote_tx(bip44_path=bip44_path,
                              transaction=tx,
@@ -79,7 +85,8 @@ def test_arbitrary_scripts_allowed(backend: BackendInterface, navigator: Navigat
                                                       test_case_name=test_name + "_1")
         else:
             navigator.navigate_until_text_and_compare(NavInsID.SWIPE_CENTER_TO_LEFT,
-                                                      [NavInsID.USE_CASE_REVIEW_CONFIRM, NavInsID.USE_CASE_STATUS_DISMISS],
+                                                      [NavInsID.USE_CASE_REVIEW_CONFIRM,
+                                                       NavInsID.USE_CASE_STATUS_DISMISS],
                                                       "Hold to sign",
                                                       ROOT_SCREENSHOT_PATH,
                                                       test_name + "_1")
@@ -96,7 +103,9 @@ def test_arbitrary_scripts_allowed(backend: BackendInterface, navigator: Navigat
                      sigdecode=sigdecode_der) is True
 
 
-def test_arbitrary_scripts_refused(backend: BackendInterface, navigator: Navigator, test_name: str) -> None:
+def test_arbitrary_scripts_refused(backend: BackendInterface,
+                                   navigator: Navigator,
+                                   test_name: str) -> None:
     client = Neo_n3_Command(backend)
 
     bip44_path: str = "m/44'/888'/0'/0/0"

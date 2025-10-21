@@ -1,5 +1,5 @@
 from io import BytesIO
-from typing import List, Optional, Literal
+from typing import Optional, Literal
 
 
 UINT64_MAX: int = 18446744073709551615
