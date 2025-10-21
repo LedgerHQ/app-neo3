@@ -334,7 +334,6 @@ UX_STEP_NOCB(ux_display_validuntilblock_step,
                  .text = G_tx.valid_until_block,
              });
 
-#if !defined(TARGET_NANOS)
 UX_STEP_NOCB(ux_display_script_step,
              bnnn_paging,
              {
@@ -342,7 +341,6 @@ UX_STEP_NOCB(ux_display_script_step,
                 .text = G_tx.script_hash,
              }
 );
-#endif
 
 UX_STEP_NOCB(
     ux_display_no_arbitrary_script_step,
@@ -430,11 +428,9 @@ static void create_transaction_flow(void) {
     ux_display_transaction_flow[index++] = &ux_display_networkfee_step;
     ux_display_transaction_flow[index++] = &ux_display_total_fee;
     ux_display_transaction_flow[index++] = &ux_display_validuntilblock_step;
-    #if !defined(TARGET_NANOS)
     if (N_storage.showScriptHash) {
         ux_display_transaction_flow[index++] = &ux_display_script_step;
     }
-    #endif
 
     // special step that won't be shown, but used for runtime displaying
     // dynamics screens when applicable
