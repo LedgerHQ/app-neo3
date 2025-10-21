@@ -2,15 +2,18 @@
 
 ## Overview
 
-The custom transaction serialization presented is for the purely fictitious BOLOK *chain* which has been inspired by other popular blockchain (see [Links](#links)).
+The custom transaction serialization presented is for the purely fictitious BOLOK *chain*
+which has been inspired by other popular blockchain (see [Links](#links)).
 
 ## Amount units
 
-The base unit in BOLOK *chain* is the BOL and the smallest unit used in raw transaction is the *bolino* or mBOL: 1 BOL = 1000 mBOL.
+The base unit in BOLOK *chain* is the BOL and the smallest unit used in raw transaction
+is the *bolino* or mBOL: 1 BOL = 1000 mBOL.
 
 ## Address format
 
-BOLOK addresses are hexadecimal numbers, identifiers derived from the last 20 bytes of the Keccak-256 hash of the public key.
+BOLOK addresses are hexadecimal numbers, identifiers derived from the last 20 bytes
+of the Keccak-256 hash of the public key.
 
 ## Structure
 
@@ -21,7 +24,7 @@ BOLOK addresses are hexadecimal numbers, identifiers derived from the last 20 by
 | `nonce` | 8 | A sequence number used to prevent message replay |
 | `to` | 20 | The destination address |
 | `value` | 8 | The amount in mBOL to send to the destination address |
-| `memo_len` | 1-9 | length of the memo as [varint](#variablelenghtinteger) |
+| `memo_len` | 1-9 | length of the memo |
 | `memo` | var | A text ASCII-encoded of length `memo_len` to show your love |
 | `v` | 1 | 0x01 if y-coordinate of R is odd, 0x00 otherwise |
 | `r` | 32 | x-coordinate of R in ECDSA signature |
@@ -42,7 +45,8 @@ Longer numbers are encoded in little endian.
 
 ### Signature
 
-Deterministic ECDSA ([RFC 6979](https://tools.ietf.org/html/rfc6979)) is used to sign transaction on the [SECP-256k1](https://www.secg.org/sec2-v2.pdf#subsubsection.2.4.1) curve.
+Deterministic ECDSA ([RFC 6979](https://tools.ietf.org/html/rfc6979)) is used to sign transaction
+on the [SECP-256k1](https://www.secg.org/sec2-v2.pdf#subsubsection.2.4.1) curve.
 The signed message is `m = Keccak-256(nonce || to || value || memo_len || memo)`.
 
 ### Fee
@@ -51,6 +55,5 @@ You won't find any fee in the transaction structure because the BOLOK *chain* ha
 
 ## Links
 
-- Bitcoin Transaction: https://en.bitcoin.it/wiki/Protocol_documentation#tx
-
-- Ethereum Transaction: https://ethereum.github.io/yellowpaper/paper.pdf#subsection.4.2
+- [Bitcoin Transaction](https://en.bitcoin.it/wiki/Protocol_documentation#tx)
+- [Ethereum Transaction](https://ethereum.github.io/yellowpaper/paper.pdf#subsection.4.2)

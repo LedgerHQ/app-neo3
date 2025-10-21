@@ -43,13 +43,13 @@ typedef struct {
     uint8_t raw_tx[MAX_TRANSACTION_LEN];  /// Raw transaction serialized
     uint8_t script_hash[SHA256_HASH_LEN];
 
-    size_t raw_tx_len;                    /// Length of raw transaction
-    transaction_t transaction;            /// Structured transaction
+    size_t raw_tx_len;          /// Length of raw transaction
+    transaction_t transaction;  /// Structured transaction
 
     /// Transaction hash digest
     /// This is just the hash of the tx signed data portion
     /// this is not the actual hash going used for signing
-    uint8_t hash[SHA256_HASH_LEN];        /// as that also includes the network magic
+    uint8_t hash[SHA256_HASH_LEN];       /// as that also includes the network magic
     uint8_t signature[MAX_DER_SIG_LEN];  /// Transaction signature encoded in ASN1.DER
     uint8_t signature_len;               /// Length of transaction signature
 } transaction_ctx_t;

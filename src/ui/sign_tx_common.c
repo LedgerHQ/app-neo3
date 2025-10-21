@@ -99,9 +99,9 @@ int start_sign_tx(void) {
         memset(G_tx.token_amount, 0, sizeof(G_tx.token_amount));
         char token_amount[sizeof(G_tx.token_amount)] = {0};
         if (!format_amount(token_amount,
-                          sizeof(token_amount),
-                          (uint64_t) G_context.tx_info.transaction.amount,
-                          G_context.tx_info.transaction.is_neo ? 0 : 8)) {
+                           sizeof(token_amount),
+                           (uint64_t) G_context.tx_info.transaction.amount,
+                           G_context.tx_info.transaction.is_neo ? 0 : 8)) {
             return io_send_sw(SW_DISPLAY_TOKEN_TRANSFER_AMOUNT_FAIL);
         }
         snprintf(G_tx.token_amount,
@@ -148,12 +148,12 @@ int start_sign_tx(void) {
 
     memset(G_tx.total_fees, 0, sizeof(G_tx.total_fees));
     char total_fee[sizeof(G_tx.total_fees)] = {0};
-    // Note that network_fee and system_fee are actually int64 and can't be less than 0 (as guarded by
-    // transaction_deserialize())
+    // Note that network_fee and system_fee are actually int64 and can't be less than 0 (as guarded
+    // by transaction_deserialize())
     if (!format_amount(total_fee,
-                      sizeof(total_fee),
-                      (uint64_t) G_context.tx_info.transaction.network_fee + G_context.tx_info.transaction.system_fee,
-                      8)) {
+                       sizeof(total_fee),
+                       (uint64_t) G_context.tx_info.transaction.network_fee + G_context.tx_info.transaction.system_fee,
+                       8)) {
         return io_send_sw(SW_DISPLAY_TOTAL_FEE_FAIL);
     }
     snprintf(G_tx.total_fees, sizeof(G_tx.total_fees), "GAS %.*s", sizeof(total_fee), total_fee);
@@ -165,7 +165,10 @@ int start_sign_tx(void) {
     PRINTF("Valid until: %s\n", G_tx.valid_until_block);
 
     memset(G_tx.script_hash, 0, sizeof(G_tx.script_hash));
-    if(format_hex(G_context.tx_info.script_hash, sizeof(G_context.tx_info.script_hash), G_tx.script_hash, sizeof(G_tx.script_hash)) == -1) {
+    if (format_hex(G_context.tx_info.script_hash,
+                   sizeof(G_context.tx_info.script_hash),
+                   G_tx.script_hash,
+                   sizeof(G_tx.script_hash)) == -1) {
         return io_send_sw(SW_DISPLAY_SCRIPT_HASH_FAIL);
     }
     PRINTF("Script hash: %s\n", G_tx.script_hash);

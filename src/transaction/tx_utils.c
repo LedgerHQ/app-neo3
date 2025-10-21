@@ -2,7 +2,6 @@
 #include "tx_utils.h"
 #include "utils.h"
 
-
 typedef union {
     uint8_t u8;
     int8_t s8;
@@ -16,7 +15,8 @@ data size;
 void try_parse_transfer_script(buffer_t *script, transaction_t *tx) {
     if (!buffer_read_u8(script, &size.u8)) return;
 
-    // first byte should be 0xb (OpCode.PUSHNULL), indicating no data for the Nep17.transfer() 'data' argument
+    // first byte should be 0xb (OpCode.PUSHNULL), indicating no data for the Nep17.transfer()
+    // 'data' argument
     if (size.u8 != 0xB) return;
 
     if (!buffer_read_u8(script, &size.u8)) return;
@@ -112,7 +112,7 @@ void try_parse_vote_script(buffer_t *script, transaction_t *tx) {
     // first byte should be 0xb (OpCode.PUSHNULL) when removing a vote, or 0x0C (OpCode.PUSHDATA1) followed by 0x21 (Length 33)
     // indicating a 'vote_to' public key
     if (size.u8 != 0xB && size.u8 != 0x0C) return;
-    
+
     if (size.u8 == 0x0B) { // remove vote
         tx->is_remove_vote = true;
     } else { // add vote

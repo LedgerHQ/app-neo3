@@ -8,7 +8,8 @@
 // uint32 (=max 10 chars) + \0
 #define UINT32_STRING_SIZE 11
 
-// Target network the tx in tended for ("MainNet", "TestNet" or uint32 network number for private nets)
+// Target network the tx in tended for ("MainNet", "TestNet" or uint32 network number for private
+// nets)
 #define NETWORK_NAME_MAX_SIZE 11
 
 // ticker + uint64 (=max 20 chars) + \0

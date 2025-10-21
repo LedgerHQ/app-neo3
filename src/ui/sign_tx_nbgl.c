@@ -164,7 +164,6 @@ static void create_transaction_flow(void) {
     }
 }
 
-
 static void review_final_callback(bool confirmed) {
     if (confirmed) {
         ui_action_validate_transaction(true, false);
@@ -174,7 +173,6 @@ static void review_final_callback(bool confirmed) {
         nbgl_useCaseReviewStatus(STATUS_TYPE_TRANSACTION_REJECTED, ui_menu_main);
     }
 }
-
 
 static void format_tag_value(dynamic_slot_t *slot, const dynamic_item_t *item) {
     signer_t s = G_context.tx_info.transaction.signers[item->content.as_item_scope.signer_index];
@@ -260,14 +258,13 @@ void start_sign_tx_ui(void) {
         content.startIndex = 0;
         content.nbPairs = static_items_nb + dyn_items_nb;
 
-        nbgl_useCaseReview(
-            TYPE_TRANSACTION,
-            &content,
-            &ICON_APP_HOME,
-            review_title,
-            NULL,
-            review_final_long_press_text,
-            review_final_callback);
+        nbgl_useCaseReview(TYPE_TRANSACTION,
+                           &content,
+                           &ICON_APP_HOME,
+                           review_title,
+                           NULL,
+                           review_final_long_press_text,
+                           review_final_callback);
     }
 }
 

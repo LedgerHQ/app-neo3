@@ -58,4 +58,3 @@ bool format_amount(char *dst, size_t dst_len, const uint64_t value, uint8_t deci
 
     return true;
 }
-

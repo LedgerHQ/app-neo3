@@ -57,54 +57,44 @@ UX_FLOW(ux_menu_main_flow,
         &ux_menu_exit_step,
         FLOW_LOOP);
 
-UX_STEP_CB(
-    ux_settings_contract_scripts,
-    bnnn,
-    switch_settings_contract_scripts(),
-    {
-        "Contract scripts",
-        "Allow contract scripts",
-        "in transactions",
-        strings.scriptsAllowed
-    });
+UX_STEP_CB(ux_settings_contract_scripts,
+           bnnn,
+           switch_settings_contract_scripts(),
+           {"Contract scripts", "Allow contract scripts", "in transactions", strings.scriptsAllowed});
 
-UX_STEP_CB(
-    ux_settings_display_script,
-    bnnn,
-    switch_settings_display_script(),
-    {
-        "Transaction script",
-        "Display script hash",
-        "in transactions",
-        strings.showScriptHash
-    });
+UX_STEP_CB(ux_settings_display_script,
+           bnnn,
+           switch_settings_display_script(),
+           {"Transaction script", "Display script hash", "in transactions", strings.showScriptHash});
 
-UX_STEP_CB(
-    ux_settings_signer_display_format,
-    bnn,
-    switch_settings_signer_display_format(),
-    {
-        "Signer account",
-        "Show as",
-        strings.signerAccountFormat
-    });
+UX_STEP_CB(ux_settings_signer_display_format,
+           bnn,
+           switch_settings_signer_display_format(),
+           {"Signer account", "Show as", strings.signerAccountFormat});
 
-UX_STEP_CB(
-    ux_settings_back_step,
-    pb,
-    ui_menu_main(),
-    {
-      &C_icon_back_x,
-      "Back",
-    });
+UX_STEP_CB(ux_settings_back_step,
+           pb,
+           ui_menu_main(),
+           {
+               &C_icon_back_x,
+               "Back",
+           });
 
 // clang-format on
-UX_FLOW(ux_settings_flow, &ux_settings_contract_scripts, &ux_settings_display_script, &ux_settings_signer_display_format, &ux_settings_back_step);
+UX_FLOW(ux_settings_flow,
+        &ux_settings_contract_scripts,
+        &ux_settings_display_script,
+        &ux_settings_signer_display_format,
+        &ux_settings_back_step);
 
 static void display_settings(const ux_flow_step_t* const start_step) {
-    strlcpy(strings.scriptsAllowed, (N_storage.scriptsAllowed ? "Allowed" : "NOT Allowed"), SETTING_SCRIPT_ALLOWED_SIZE);
+    strlcpy(strings.scriptsAllowed,
+            (N_storage.scriptsAllowed ? "Allowed" : "NOT Allowed"),
+            SETTING_SCRIPT_ALLOWED_SIZE);
     strlcpy(strings.showScriptHash, (N_storage.showScriptHash ? "Show" : "Hide"), SETTING_SCRIPT_HASH_SIZE);
-    strlcpy(strings.signerAccountFormat, (N_storage.signerAccountFormat ? "NEO address" : "Script Hash"), SETTING_SCRIPT_ALLOWED_SIZE);
+    strlcpy(strings.signerAccountFormat,
+            (N_storage.signerAccountFormat ? "NEO address" : "Script Hash"),
+            SETTING_SCRIPT_ALLOWED_SIZE);
     ux_flow_init(0, ux_settings_flow, start_step);
 }
 
@@ -157,7 +147,7 @@ static void quit_app_callback(void) {
 
 // Settings
 
-#define SETTING_CONTENTS_NB 3
+#define SETTING_CONTENTS_NB  3
 #define SETTINGS_SWITCHES_NB 3
 enum {
     SWITCH_CONTRACT_DATA_SET_TOKEN = FIRST_USER_TOKEN,
@@ -168,7 +158,6 @@ enum {
 static nbgl_contentSwitch_t switches[SETTINGS_SWITCHES_NB] = {0};
 
 static void controls_callback(int token, uint8_t index, int page) {
-
     UNUSED(page);
     UNUSED(index);
 
@@ -196,20 +185,14 @@ static void controls_callback(int token, uint8_t index, int page) {
     }
 }
 
-static const nbgl_content_t contents[SETTING_CONTENTS_NB] = {
-    {
-        .type = SWITCHES_LIST,
-        .content.switchesList.nbSwitches = SETTINGS_SWITCHES_NB,
-        .content.switchesList.switches = switches,
-        .contentActionCallback = controls_callback
-    }
-};
+static const nbgl_content_t contents[SETTING_CONTENTS_NB] = {{.type = SWITCHES_LIST,
+                                                              .content.switchesList.nbSwitches = SETTINGS_SWITCHES_NB,
+                                                              .content.switchesList.switches = switches,
+                                                              .contentActionCallback = controls_callback}};
 
-static const nbgl_genericContents_t settingContents = {
-    .callbackCallNeeded = false,
-    .contentsList = contents,
-    .nbContents = 1
-};
+static const nbgl_genericContents_t settingContents = {.callbackCallNeeded = false,
+                                                       .contentsList = contents,
+                                                       .nbContents = 1};
 
 void ui_menu_settings(bool confirm) {
     switches[0].text = "Contract scripts";
@@ -242,17 +225,15 @@ void ui_menu_settings(bool confirm) {
         switches[2].initState = OFF_STATE;
     }
 
-
-    nbgl_useCaseHomeAndSettings(DISPLAYABLE_APPNAME, 
-                                &ICON_APP_HOME, 
-                                NULL, 
-                                (confirm ? 0 : INIT_HOME_PAGE), 
-                                &settingContents, 
-                                &infoList, 
-                                NULL, 
+    nbgl_useCaseHomeAndSettings(DISPLAYABLE_APPNAME,
+                                &ICON_APP_HOME,
+                                NULL,
+                                (confirm ? 0 : INIT_HOME_PAGE),
+                                &settingContents,
+                                &infoList,
+                                NULL,
                                 quit_app_callback);
 }
-
 
 static void ui_menu_main_nbgl(void) {
     ui_menu_settings(false);

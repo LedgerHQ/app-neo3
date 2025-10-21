@@ -77,4 +77,3 @@ bool buffer_read_s64(buffer_t *buffer, int64_t *value, endianness_t endianness);
  *
  */
 bool buffer_read_uvarint(buffer_t *buffer, uint64_t *value);
-

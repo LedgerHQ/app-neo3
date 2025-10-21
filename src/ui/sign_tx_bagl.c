@@ -337,18 +337,17 @@ UX_STEP_NOCB(ux_display_validuntilblock_step,
 UX_STEP_NOCB(ux_display_script_step,
              bnnn_paging,
              {
-                .title = "Script hash",
-                .text = G_tx.script_hash,
-             }
-);
+                 .title = "Script hash",
+                 .text = G_tx.script_hash,
+             });
 
-UX_STEP_NOCB(
-    ux_display_no_arbitrary_script_step,
-    bnnn_paging,
-    {
-        .title = "Error",
-        .text = "Arbitrary contract scripts are not allowed. Go to Settings to enable signing of such transactions",
-    });
+UX_STEP_NOCB(ux_display_no_arbitrary_script_step,
+             bnnn_paging,
+             {
+                 .title = "Error",
+                 .text = "Arbitrary contract scripts are not allowed. Go to Settings to enable "
+                         "signing of such transactions",
+             });
 
 UX_STEP_CB(ux_display_abort_step,
            pb,
@@ -367,7 +366,8 @@ UX_STEP_NOCB(ux_display_vote_to_step,
 
 UX_STEP_NOCB(ux_display_vote_retract_step, nn, {"Retracting vote", ""});
 
-// 3 special steps for runtime dynamic screen generation, used to display attached signers and their properties
+// 3 special steps for runtime dynamic screen generation, used to display attached signers and their
+// properties
 UX_STEP_INIT(ux_upper_delimiter, NULL, NULL, { display_next_state(true); });
 
 UX_STEP_NOCB(ux_display_generic,

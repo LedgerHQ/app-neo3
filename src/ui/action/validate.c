@@ -46,9 +46,9 @@ void ui_action_validate_transaction(bool approved, bool go_back_to_menu) {
             io_send_sw(SW_SIGN_FAIL);
         } else {
             io_send_response_buffer(&(const buffer_t){.ptr = G_context.tx_info.signature,
-                                               .size = G_context.tx_info.signature_len,
-                                               .offset = 0},
-                             SWO_SUCCESS);
+                                                      .size = G_context.tx_info.signature_len,
+                                                      .offset = 0},
+                                    SWO_SUCCESS);
         }
     } else {
         G_context.state = STATE_NONE;

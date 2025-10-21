@@ -76,4 +76,3 @@ ENABLE_BLUETOOTH = 1
 ENABLE_NBGL_QRCODE = 1
 
 include $(BOLOS_SDK)/Makefile.standard_app
-

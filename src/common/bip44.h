@@ -7,7 +7,8 @@
 /**
  * @brief Parse BIP44 path from buffer and perform basic validations
  *
- * Validations include: ensuring COIN_TYPE is NEO, account is hardened, prevent ridiculous large address index
+ * Validations include: ensuring COIN_TYPE is NEO, account is hardened, prevent ridiculous large
+ * address index
  *
  * @param in
  * @param bip44path_out array where the BIP44 path numbers will be stored

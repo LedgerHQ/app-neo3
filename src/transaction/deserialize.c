@@ -137,8 +137,8 @@ parser_status_e transaction_deserialize(buffer_t *buf, transaction_t *tx) {
     if (!buffer_read_uvarint(buf, &attributes_length)) {
         return ATTRIBUTES_LENGTH_PARSING_ERROR;
     }
-    // The actual network does (MAX_TX_SIGNERS (16) - signer length) but due to memory constraints we lowered the
-    // MAX_ATTRIBUTES and hardcode the attributes limit to 2
+    // The actual network does (MAX_TX_SIGNERS (16) - signer length) but due to memory constraints
+    // we lowered the MAX_ATTRIBUTES and hardcode the attributes limit to 2
     if (attributes_length > MAX_ATTRIBUTES || attributes_length > 2) {
         return ATTRIBUTES_LENGTH_VALUE_ERROR;
     }

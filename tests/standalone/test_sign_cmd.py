@@ -68,7 +68,7 @@ def test_sign_tx(backend: BackendInterface, scenario_navigator: NavigateWithScen
     with client.sign_tx(bip44_path=bip44_path,
                         transaction=tx,
                         network_magic=magic):
-        scenario_navigator.review_approve()        
+        scenario_navigator.review_approve()
 
     der_sig = backend.last_async_response.data
 

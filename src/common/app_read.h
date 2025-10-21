@@ -69,7 +69,6 @@ int16_t read_s16_le(const uint8_t *ptr, size_t offset);
  */
 int32_t read_s32_le(const uint8_t *ptr, size_t offset);
 
-
 /**
  * Read 8 bytes as Little Endian from byte buffer.
  *

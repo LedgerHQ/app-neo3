@@ -35,7 +35,7 @@ def test_get_public_key_confirm_refused(backend: BackendInterface, scenario_navi
     backend.raise_policy = RaisePolicy.RAISE_NOTHING
     with client.get_public_key_async(bip44_path=path):
         scenario_navigator.address_review_reject()
-        
+
 
     rapdu = backend.last_async_response
     assert rapdu.status == 0x6985 # Deny error
