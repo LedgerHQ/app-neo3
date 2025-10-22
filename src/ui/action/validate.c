@@ -29,7 +29,7 @@ void ui_action_validate_pubkey(bool approved, bool go_back_to_menu) {
     if (approved) {
         helper_send_response_pubkey();
     } else {
-        io_send_sw(SW_DENY);
+        io_send_sw(SWO_CONDITIONS_NOT_SATISFIED);
     }
 
     if (go_back_to_menu) {
@@ -45,14 +45,14 @@ void ui_action_validate_transaction(bool approved, bool go_back_to_menu) {
             G_context.state = STATE_NONE;
             io_send_sw(SW_SIGN_FAIL);
         } else {
-            io_send_response(&(const buffer_t){.ptr = G_context.tx_info.signature,
-                                               .size = G_context.tx_info.signature_len,
-                                               .offset = 0},
-                             SW_OK);
+            io_send_response_buffer(&(const buffer_t){.ptr = G_context.tx_info.signature,
+                                                      .size = G_context.tx_info.signature_len,
+                                                      .offset = 0},
+                                    SWO_SUCCESS);
         }
     } else {
         G_context.state = STATE_NONE;
-        io_send_sw(SW_DENY);
+        io_send_sw(SWO_CONDITIONS_NOT_SATISFIED);
     }
 
     if (go_back_to_menu) {

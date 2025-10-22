@@ -28,9 +28,9 @@
 #include "globals.h"
 #include "io.h"
 #include "sw.h"
-#include "action/validate.h"
-#include "transaction/transaction_types.h"
-#include "common/format.h"
+#include "validate.h"
+#include "transaction_types.h"
+#include "format.h"
 #include "utils.h"
 #include "menu.h"
 #include "shared_context.h"
@@ -85,7 +85,7 @@ UX_FLOW(ux_get_pub_key_pubkey_flow,
 #else
 
 static void review_choice(bool confirm) {
-     ui_action_validate_pubkey(confirm, false);
+    ui_action_validate_pubkey(confirm, false);
     if (confirm) {
         nbgl_useCaseReviewStatus(STATUS_TYPE_ADDRESS_VERIFIED, ui_menu_main);
     } else {
@@ -94,13 +94,7 @@ static void review_choice(bool confirm) {
 }
 
 static void ui_get_public_key_nbgl(void) {
-    nbgl_useCaseAddressReview(
-        g_address,
-        NULL,
-        &C_icon_neo_n3_64x64,
-        "Verify " APPNAME "\naddress",
-        NULL,
-        review_choice);
+    nbgl_useCaseAddressReview(g_address, NULL, &ICON_APP_HOME, "Verify " APPNAME "\naddress", NULL, review_choice);
 }
 
 #endif

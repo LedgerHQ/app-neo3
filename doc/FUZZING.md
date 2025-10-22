@@ -5,7 +5,7 @@ Building the fuzzer requires Clang and CMake.
 To quickly get started fuzzing NEO transaction parser using libFuzzer:
 
 ```shell
-cd fuzzing
+cd tests/fuzzing
 ./build.sh
 ./run.sh
 ```
@@ -15,8 +15,8 @@ cd fuzzing
 To generate a code coverage report of the fuzzer, it is possible to use `llvm-cov` (on Ubuntu: `sudo apt install llvm`):
 
 ```shell
-cd fuzzing
+cd tests/fuzzing
 ./coverage.sh
 ```
 
-These commands generate a HTML report in `fuzzing/html-coverage/index.html`.
+These commands generate a HTML report in `tests/fuzzing/html-coverage/index.html`.

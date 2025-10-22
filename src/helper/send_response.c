@@ -6,7 +6,7 @@
 #include "constants.h"
 #include "globals.h"
 #include "sw.h"
-#include "common/buffer.h"
+#include "app_buffer.h"
 
 int helper_send_response_pubkey() {
     uint8_t resp[1 + PUBKEY_LEN] = {0};
@@ -16,5 +16,5 @@ int helper_send_response_pubkey() {
     memcpy(resp + offset, G_context.raw_public_key, PUBKEY_LEN);
     offset += PUBKEY_LEN;
 
-    return io_send_response(&(const buffer_t){.ptr = resp, .size = offset, .offset = 0}, SW_OK);
+    return io_send_response_buffer(&(const buffer_t){.ptr = resp, .size = offset, .offset = 0}, SWO_SUCCESS);
 }

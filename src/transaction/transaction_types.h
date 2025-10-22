@@ -4,9 +4,9 @@
 #include <stdint.h>   // uint*_t
 #include <stdbool.h>  // bool
 
-#define ADDRESS_LEN 34  // base58 encoded address size
-#define UINT160_LEN 20
-#define ECPOINT_LEN 33
+#define ADDRESS_LEN     34  // base58 encoded address size
+#define UINT160_LEN     20
+#define ECPOINT_LEN     33
 #define SHA256_HASH_LEN 32
 
 /**
@@ -87,7 +87,8 @@ typedef struct {
     witness_scope_e scope;
     uint8_t *allowed_contracts[MAX_SIGNER_ALLOWED_CONTRACTS];  // array of UInt160s
     uint8_t allowed_contracts_size;
-    uint8_t *allowed_groups[MAX_SIGNER_ALLOWED_GROUPS];  // array of ECPoints in compressed format, 33 bytes
+    uint8_t *allowed_groups[MAX_SIGNER_ALLOWED_GROUPS];  // array of ECPoints in compressed format,
+                                                         // 33 bytes
     uint8_t allowed_groups_size;
 } signer_t;
 
@@ -113,7 +114,8 @@ typedef struct {
     uint8_t attributes_size;  // the actual attributes count after parsing
     uint8_t *script;          // VM opcodes
     uint16_t script_size;
-    bool is_system_asset_transfer;  // indicates if the instructions in `script` match a standard GAS or NEO transfer
+    bool is_system_asset_transfer;  // indicates if the instructions in `script` match a standard
+                                    // GAS or NEO transfer
     bool is_neo;                    // indicates if 'transfer' is called on the NEO contract. False means GAS contract
     int64_t amount;                 // transfer amount
     uint8_t dst_address[ADDRESS_LEN];

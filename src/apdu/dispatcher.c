@@ -24,15 +24,15 @@
 #include "types.h"
 #include "io.h"
 #include "sw.h"
-#include "common/buffer.h"
-#include "handler/get_version.h"
-#include "handler/get_app_name.h"
-#include "handler/get_public_key.h"
-#include "handler/sign_tx.h"
+#include "app_buffer.h"
+#include "get_version.h"
+#include "get_app_name.h"
+#include "get_public_key.h"
+#include "sign_tx.h"
 
 int apdu_dispatcher(const command_t *cmd) {
     if (cmd->cla != CLA) {
-        return io_send_sw(SW_CLA_NOT_SUPPORTED);
+        return io_send_sw(SWO_INVALID_CLA);
     }
 
     buffer_t buf = {0};
@@ -40,23 +40,23 @@ int apdu_dispatcher(const command_t *cmd) {
     switch (cmd->ins) {
         case GET_VERSION:
             if (cmd->p1 != 0 || cmd->p2 != 0) {
-                return io_send_sw(SW_WRONG_P1P2);
+                return io_send_sw(SWO_INCORRECT_P1_P2);
             }
 
             return handler_get_version();
         case GET_APP_NAME:
             if (cmd->p1 != 0 || cmd->p2 != 0) {
-                return io_send_sw(SW_WRONG_P1P2);
+                return io_send_sw(SWO_INCORRECT_P1_P2);
             }
 
             return handler_get_app_name();
         case GET_PUBLIC_KEY:
             if (cmd->p1 > 0 || cmd->p2 > 1) {
-                return io_send_sw(SW_WRONG_P1P2);
+                return io_send_sw(SWO_INCORRECT_P1_P2);
             }
 
             if (!cmd->data) {
-                return io_send_sw(SW_WRONG_DATA_LENGTH);
+                return io_send_sw(SWO_WRONG_DATA_LENGTH);
             }
 
             buf.ptr = cmd->data;
@@ -68,11 +68,11 @@ int apdu_dispatcher(const command_t *cmd) {
             if ((cmd->p1 == P1_START && cmd->p2 != P2_MORE) ||  // first apdu must be the BIP44 path
                 cmd->p1 > P1_MAX ||                             //
                 (cmd->p2 != P2_LAST && cmd->p2 != P2_MORE)) {
-                return io_send_sw(SW_WRONG_P1P2);
+                return io_send_sw(SWO_INCORRECT_P1_P2);
             }
 
             if (!cmd->data) {
-                return io_send_sw(SW_WRONG_DATA_LENGTH);
+                return io_send_sw(SWO_WRONG_DATA_LENGTH);
             }
 
             buf.ptr = cmd->data;
@@ -81,6 +81,6 @@ int apdu_dispatcher(const command_t *cmd) {
 
             return handler_sign_tx(&buf, cmd->p1, (bool) (cmd->p2 & P2_MORE));
         default:
-            return io_send_sw(SW_INS_NOT_SUPPORTED);
+            return io_send_sw(SWO_INVALID_INS);
     }
 }

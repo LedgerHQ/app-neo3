@@ -9,7 +9,6 @@
 | `SIGN_TX` | 0x02 | Sign transaction given a BIP44 path, network magic and raw transaction |
 | `GET_PUBLIC_KEY` | 0x04 | Get public key given BIP44 path |
 
-
 ## GET_VERSION
 
 ### Command
@@ -54,7 +53,6 @@
 | --- | --- | --- |
 | var | 0x9000 | `ASN1.DER encoded signature (max 72 bytes)`|
 
-
 ## GET_PUBLIC_KEY
 
 ### Command
@@ -77,10 +75,10 @@ TODO: update with final list!
 | --- | --- | --- |
 | 0x6985 | `SW_DENY` | Rejected by user |
 | 0x6A86 | `SW_WRONG_P1P2` | Either `P1` or `P2` is incorrect |
-| 0x6A87 | `SW_WRONG_DATA_LENGTH` | `Lc` or minimum APDU lenght is incorrect |
+| 0x6A87 | `SW_WRONG_DATA_LENGTH` | `Lc` or minimum APDU length is incorrect |
 | 0x6D00 | `SW_INS_NOT_SUPPORTED` | No command exists with `INS` |
 | 0x6E00 | `SW_CLA_NOT_SUPPORTED` | Bad `CLA` used for this application |
-| 0xB000 | `SW_WRONG_RESPONSE_LENGTH` | Wrong response lenght (buffer size problem) |
+| 0xB000 | `SW_WRONG_RESPONSE_LENGTH` | Wrong response length (buffer size problem) |
 | 0xB001 | `SW_WRONG_TX_LENGTH` | Max transaction length exceeded |
 | 0xB002 | `SW_TX_PARSING_FAIL` | Failed to parse raw transaction |
 | 0xB003 | `SW_TX_USER_CONFIRMATION_FAIL` | User rejected TX signing |
