@@ -9,9 +9,9 @@
 #include "globals.h"
 #include "io.h"
 #include "sw.h"
-#include "action/validate.h"
-#include "transaction/transaction_types.h"
-#include "common/format.h"
+#include "validate.h"
+#include "transaction_types.h"
+#include "format.h"
 #include "utils.h"
 #include "menu.h"
 #include "shared_context.h"
@@ -334,23 +334,20 @@ UX_STEP_NOCB(ux_display_validuntilblock_step,
                  .text = G_tx.valid_until_block,
              });
 
-#if !defined(TARGET_NANOS)
 UX_STEP_NOCB(ux_display_script_step,
              bnnn_paging,
              {
-                .title = "Script hash",
-                .text = G_tx.script_hash,
-             }
-);
-#endif
+                 .title = "Script hash",
+                 .text = G_tx.script_hash,
+             });
 
-UX_STEP_NOCB(
-    ux_display_no_arbitrary_script_step,
-    bnnn_paging,
-    {
-        .title = "Error",
-        .text = "Arbitrary contract scripts are not allowed. Go to Settings to enable signing of such transactions",
-    });
+UX_STEP_NOCB(ux_display_no_arbitrary_script_step,
+             bnnn_paging,
+             {
+                 .title = "Error",
+                 .text = "Arbitrary contract scripts are not allowed. Go to Settings to enable "
+                         "signing of such transactions",
+             });
 
 UX_STEP_CB(ux_display_abort_step,
            pb,
@@ -369,7 +366,8 @@ UX_STEP_NOCB(ux_display_vote_to_step,
 
 UX_STEP_NOCB(ux_display_vote_retract_step, nn, {"Retracting vote", ""});
 
-// 3 special steps for runtime dynamic screen generation, used to display attached signers and their properties
+// 3 special steps for runtime dynamic screen generation, used to display attached signers and their
+// properties
 UX_STEP_INIT(ux_upper_delimiter, NULL, NULL, { display_next_state(true); });
 
 UX_STEP_NOCB(ux_display_generic,
@@ -430,11 +428,9 @@ static void create_transaction_flow(void) {
     ux_display_transaction_flow[index++] = &ux_display_networkfee_step;
     ux_display_transaction_flow[index++] = &ux_display_total_fee;
     ux_display_transaction_flow[index++] = &ux_display_validuntilblock_step;
-    #if !defined(TARGET_NANOS)
     if (N_storage.showScriptHash) {
         ux_display_transaction_flow[index++] = &ux_display_script_step;
     }
-    #endif
 
     // special step that won't be shown, but used for runtime displaying
     // dynamics screens when applicable

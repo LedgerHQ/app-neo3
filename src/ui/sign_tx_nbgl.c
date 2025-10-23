@@ -11,9 +11,9 @@
 #include "globals.h"
 #include "io.h"
 #include "sw.h"
-#include "action/validate.h"
-#include "transaction/transaction_types.h"
-#include "common/format.h"
+#include "validate.h"
+#include "transaction_types.h"
+#include "format.h"
 #include "utils.h"
 #include "menu.h"
 #include "shared_context.h"
@@ -164,7 +164,6 @@ static void create_transaction_flow(void) {
     }
 }
 
-
 static void review_final_callback(bool confirmed) {
     if (confirmed) {
         ui_action_validate_transaction(true, false);
@@ -174,7 +173,6 @@ static void review_final_callback(bool confirmed) {
         nbgl_useCaseReviewStatus(STATUS_TYPE_TRANSACTION_REJECTED, ui_menu_main);
     }
 }
-
 
 static void format_tag_value(dynamic_slot_t *slot, const dynamic_item_t *item) {
     signer_t s = G_context.tx_info.transaction.signers[item->content.as_item_scope.signer_index];
@@ -241,7 +239,7 @@ void start_sign_tx_ui(void) {
     if (!G_context.tx_info.transaction.is_system_asset_transfer && !G_context.tx_info.transaction.is_vote_script &&
         !N_storage.scriptsAllowed) {
         // TODO: maybe add a mechanism to resume the transaction if the user allows the setting
-        nbgl_useCaseChoice(&C_Warning_64px,
+        nbgl_useCaseChoice(&LARGE_WARNING_ICON,
                            "Arbitrary contract\nscripts are not allowed.",
                            "Go to the Settings menu to\nenable the signing of such\ntransactions.\n\nThis "
                            "transaction\nwill be rejected.",
@@ -260,14 +258,13 @@ void start_sign_tx_ui(void) {
         content.startIndex = 0;
         content.nbPairs = static_items_nb + dyn_items_nb;
 
-        nbgl_useCaseReview(
-            TYPE_TRANSACTION,
-            &content,
-            &C_icon_neo_n3_64x64,
-            review_title,
-            NULL,
-            review_final_long_press_text,
-            review_final_callback);
+        nbgl_useCaseReview(TYPE_TRANSACTION,
+                           &content,
+                           &ICON_APP_HOME,
+                           review_title,
+                           NULL,
+                           review_final_long_press_text,
+                           review_final_callback);
     }
 }
 

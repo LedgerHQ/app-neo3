@@ -28,13 +28,12 @@
 #include "sw.h"
 #include "globals.h"
 #include "crypto.h"
-#include "common/buffer.h"
-#include "common/bip44.h"
-#include "transaction/transaction_types.h"
-#include "transaction/deserialize.h"
+#include "app_buffer.h"
+#include "bip44.h"
+#include "transaction_types.h"
+#include "deserialize.h"
 
 int handler_sign_tx(buffer_t *cdata, uint8_t chunk, bool more) {
-
     if (chunk == 0) {  // First APDU, parse BIP44 path
         explicit_bzero(&G_context, sizeof(G_context));
         G_context.req_type = CONFIRM_TRANSACTION;
@@ -46,7 +45,7 @@ int handler_sign_tx(buffer_t *cdata, uint8_t chunk, bool more) {
         }
 
         G_context.state = STATE_BIP44_OK;
-        return io_send_sw(SW_OK);
+        return io_send_sw(SWO_SUCCESS);
     } else if (chunk == 1) {
         if (G_context.req_type != CONFIRM_TRANSACTION && G_context.state != STATE_BIP44_OK) {
             return io_send_sw(SW_BAD_STATE);
@@ -56,7 +55,7 @@ int handler_sign_tx(buffer_t *cdata, uint8_t chunk, bool more) {
             return io_send_sw(SW_MAGIC_PARSING_FAIL);
         }
         G_context.state = STATE_MAGIC_OK;
-        return io_send_sw(SW_OK);
+        return io_send_sw(SWO_SUCCESS);
     } else {  // Receive transaction
         if (G_context.req_type != CONFIRM_TRANSACTION && G_context.state != STATE_MAGIC_OK) {
             return io_send_sw(SW_BAD_STATE);
@@ -70,7 +69,7 @@ int handler_sign_tx(buffer_t *cdata, uint8_t chunk, bool more) {
 
             G_context.tx_info.raw_tx_len += cdata->size;
 
-            return io_send_sw(SW_OK);
+            return io_send_sw(SWO_SUCCESS);
         } else {  // Last APDU, let's parse and sign
             if (G_context.tx_info.raw_tx_len + cdata->size > MAX_TRANSACTION_LEN ||
                 !buffer_move(cdata, G_context.tx_info.raw_tx + G_context.tx_info.raw_tx_len, cdata->size)) {
@@ -85,44 +84,45 @@ int handler_sign_tx(buffer_t *cdata, uint8_t chunk, bool more) {
             PRINTF("Parsing status: %d.\n", status);
             if (status != PARSING_OK) {
                 char status_char[1] = {(uint8_t) status};
-                return io_send_response(&(const buffer_t){.ptr = (unsigned char *) status_char, .size = 1, .offset = 0},
-                                        SW_TX_PARSING_FAIL);
+                return io_send_response_buffer(
+                    &(const buffer_t){.ptr = (unsigned char *) status_char, .size = 1, .offset = 0},
+                    SW_TX_PARSING_FAIL);
             }
 
             G_context.state = STATE_PARSED;
 
             /**
-             * Here we hash the signed part of the transaction. This is _not_ the final hash used as input for ecdsa
-             * (see crypto_sign_tx()) The final hash is: sha256(network magic + sha256(signed part of tx data)), but we
-             * don't hash this until we've approved among others the network magic
+             * Here we hash the signed part of the transaction. This is _not_ the final hash used as
+             * input for ecdsa (see crypto_sign_tx()) The final hash is: sha256(network magic +
+             * sha256(signed part of tx data)), but we don't hash this until we've approved among
+             * others the network magic
              */
 
             cx_sha256_t tx_hash;
             cx_sha256_init(&tx_hash);
             CX_ASSERT(cx_hash_no_throw((cx_hash_t *) &tx_hash,
-                             CX_LAST /*mode*/,
-                             G_context.tx_info.raw_tx /* data in */,
-                             G_context.tx_info.raw_tx_len /* data in len */,
-                             G_context.tx_info.hash /* hash out*/,
-                             sizeof(G_context.tx_info.hash) /* hash out len */));
+                                       CX_LAST /*mode*/,
+                                       G_context.tx_info.raw_tx /* data in */,
+                                       G_context.tx_info.raw_tx_len /* data in len */,
+                                       G_context.tx_info.hash /* hash out*/,
+                                       sizeof(G_context.tx_info.hash) /* hash out len */));
 
             PRINTF("Hash: %.*H\n", sizeof(G_context.tx_info.hash), G_context.tx_info.hash);
 
-#if !defined(TARGET_NANOS)
             /**
-             * G_context.txinfo.raw_tx has been parsed in transaction_deserialize, and hashed as part of the signed data.
-             * Now that buffer can be re-used for storing the tx.script hash
+             * G_context.txinfo.raw_tx has been parsed in transaction_deserialize, and hashed as
+             * part of the signed data. Now that buffer can be reused for storing the tx.script
+             * hash
              */
             cx_sha256_init(&tx_hash);
             CX_ASSERT(cx_hash_no_throw((cx_hash_t *) &tx_hash,
-                             CX_LAST /*mode*/,
-                             G_context.tx_info.transaction.script /* data in */,
-                             G_context.tx_info.transaction.script_size /* data in len */,
-                             G_context.tx_info.script_hash /* hash out*/,
-                             sizeof(G_context.tx_info.script_hash) /* hash out len */));
+                                       CX_LAST /*mode*/,
+                                       G_context.tx_info.transaction.script /* data in */,
+                                       G_context.tx_info.transaction.script_size /* data in len */,
+                                       G_context.tx_info.script_hash /* hash out*/,
+                                       sizeof(G_context.tx_info.script_hash) /* hash out len */));
 
             PRINTF("Hash: %.*H\n", sizeof(G_context.tx_info.script_hash), G_context.tx_info.script_hash);
-#endif
             if (G_context.req_type != CONFIRM_TRANSACTION || G_context.state != STATE_PARSED) {
                 G_context.state = STATE_NONE;
                 return io_send_sw(SW_BAD_STATE);

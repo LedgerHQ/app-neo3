@@ -1,8 +1,9 @@
-// parts of code gracefully copied from app-neo (https://github.com/LedgerHQ/app-neo/blob/master/src/neo.c)
+// parts of code gracefully copied from app-neo
+// (https://github.com/LedgerHQ/app-neo/blob/master/src/neo.c)
 
 #include "utils.h"
 #include "types.h"
-#include "common/base58.h"
+#include "base58.h"
 
 #include <string.h>
 
@@ -21,12 +22,14 @@
 /** length of a tx.output Address, after Base58 encoding. */
 #define ADDRESS_BASE58_LEN 34
 
-/** length of a Address before encoding, which is the length of <address_version>+<script_hash>+<checksum> */
+/** length of a Address before encoding, which is the length of
+ * <address_version>+<script_hash>+<checksum> */
 #define ADDRESS_LEN_PRE (1 + SCRIPT_HASH_LEN + SCRIPT_HASH_CHECKSUM_LEN)
 
 /**
  * Length of a standard single account verification script
- * 1 byte OpCode.PUSHDATA1 + 1 byte size + 33 bytes public key + 1 byte OpCode.SYSCALL + 4 bytes syscall id
+ * 1 byte OpCode.PUSHDATA1 + 1 byte size + 33 bytes public key + 1 byte OpCode.SYSCALL + 4 bytes
+ * syscall id
  */
 #define VERIFICATION_SCRIPT_LENGTH 40
 
@@ -65,7 +68,6 @@ void public_key_hash160(const unsigned char* in, unsigned short inlen, unsigned 
 }
 
 void script_hash_to_address(char* out, size_t out_len, const unsigned char* script_hash) {
-
     static cx_sha256_t data_hash;
     unsigned char data_hash_1[SHA256_HASH_LEN];
     unsigned char data_hash_2[SHA256_HASH_LEN];
@@ -85,7 +87,6 @@ void script_hash_to_address(char* out, size_t out_len, const unsigned char* scri
     memcpy(&address[1 + UINT160_LEN], data_hash_2, SCRIPT_HASH_CHECKSUM_LEN);
 
     base58_encode(address, sizeof(address), out, out_len);
-
 }
 
 bool address_from_pubkey(const uint8_t public_key[static 64], char* out, size_t out_len) {

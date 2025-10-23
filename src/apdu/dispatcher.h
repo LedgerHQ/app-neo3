@@ -19,8 +19,9 @@
  * Parameter 1 for maximum APDU number.
  * First apdu must always be the BIP44 path (P1 chunk 0)
  * Second apdu must always be the network magic, (P1 chunk 1)
- * The maximum APDU length is 255 bytes. Subtracting the 5 bytes header leaves 250 bytes per APDU of actual data.
- * With MAX_TRANSACTION_LEN set to 1024 we should at most need 5 APDU's to transmit the transaction part (P1 chunk 2..6)
+ * The maximum APDU length is 255 bytes. Subtracting the 5 bytes header leaves 250 bytes per APDU of
+ * actual data. With MAX_TRANSACTION_LEN set to 1024 we should at most need 5 APDU's to transmit the
+ * transaction part (P1 chunk 2..6)
  */
 #define P1_MAX 0x06
 

@@ -9,9 +9,9 @@
 #include "globals.h"
 #include "io.h"
 #include "sw.h"
-#include "action/validate.h"
-#include "transaction/transaction_types.h"
-#include "common/format.h"
+#include "validate.h"
+#include "transaction_types.h"
+#include "app_format.h"
 #include "utils.h"
 #include "menu.h"
 #include "shared_context.h"
@@ -98,10 +98,10 @@ int start_sign_tx(void) {
 
         memset(G_tx.token_amount, 0, sizeof(G_tx.token_amount));
         char token_amount[sizeof(G_tx.token_amount)] = {0};
-        if (!format_fpu64(token_amount,
-                          sizeof(token_amount),
-                          (uint64_t) G_context.tx_info.transaction.amount,
-                          G_context.tx_info.transaction.is_neo ? 0 : 8)) {
+        if (!format_amount(token_amount,
+                           sizeof(token_amount),
+                           (uint64_t) G_context.tx_info.transaction.amount,
+                           G_context.tx_info.transaction.is_neo ? 0 : 8)) {
             return io_send_sw(SW_DISPLAY_TOKEN_TRANSFER_AMOUNT_FAIL);
         }
         snprintf(G_tx.token_amount,
@@ -131,7 +131,7 @@ int start_sign_tx(void) {
     // It is not allowed to be negative so we can safely cast it to uint64_t
     memset(G_tx.system_fee, 0, sizeof(G_tx.system_fee));
     char system_fee[sizeof(G_tx.system_fee)] = {0};
-    if (!format_fpu64(system_fee, sizeof(system_fee), (uint64_t) G_context.tx_info.transaction.system_fee, 8)) {
+    if (!format_amount(system_fee, sizeof(system_fee), (uint64_t) G_context.tx_info.transaction.system_fee, 8)) {
         return io_send_sw(SW_DISPLAY_SYSTEM_FEE_FAIL);
     }
     snprintf(G_tx.system_fee, sizeof(G_tx.system_fee), "GAS %.*s", sizeof(system_fee), system_fee);
@@ -140,7 +140,7 @@ int start_sign_tx(void) {
     // Network fee is stored in a similar fashion as system fee above
     memset(G_tx.network_fee, 0, sizeof(G_tx.network_fee));
     char network_fee[sizeof(G_tx.network_fee)] = {0};
-    if (!format_fpu64(network_fee, sizeof(network_fee), (uint64_t) G_context.tx_info.transaction.network_fee, 8)) {
+    if (!format_amount(network_fee, sizeof(network_fee), (uint64_t) G_context.tx_info.transaction.network_fee, 8)) {
         return io_send_sw(SW_DISPLAY_NETWORK_FEE_FAIL);
     }
     snprintf(G_tx.network_fee, sizeof(G_tx.network_fee), "GAS %.*s", sizeof(network_fee), network_fee);
@@ -148,12 +148,12 @@ int start_sign_tx(void) {
 
     memset(G_tx.total_fees, 0, sizeof(G_tx.total_fees));
     char total_fee[sizeof(G_tx.total_fees)] = {0};
-    // Note that network_fee and system_fee are actually int64 and can't be less than 0 (as guarded by
-    // transaction_deserialize())
-    if (!format_fpu64(total_fee,
-                      sizeof(total_fee),
-                      (uint64_t) G_context.tx_info.transaction.network_fee + G_context.tx_info.transaction.system_fee,
-                      8)) {
+    // Note that network_fee and system_fee are actually int64 and can't be less than 0 (as guarded
+    // by transaction_deserialize())
+    if (!format_amount(total_fee,
+                       sizeof(total_fee),
+                       (uint64_t) G_context.tx_info.transaction.network_fee + G_context.tx_info.transaction.system_fee,
+                       8)) {
         return io_send_sw(SW_DISPLAY_TOTAL_FEE_FAIL);
     }
     snprintf(G_tx.total_fees, sizeof(G_tx.total_fees), "GAS %.*s", sizeof(total_fee), total_fee);
@@ -164,13 +164,14 @@ int start_sign_tx(void) {
              G_context.tx_info.transaction.valid_until_block);
     PRINTF("Valid until: %s\n", G_tx.valid_until_block);
 
-    #if !defined(TARGET_NANOS)
     memset(G_tx.script_hash, 0, sizeof(G_tx.script_hash));
-    if(format_hex(G_context.tx_info.script_hash, sizeof(G_context.tx_info.script_hash), G_tx.script_hash, sizeof(G_tx.script_hash)) == -1) {
+    if (format_hex(G_context.tx_info.script_hash,
+                   sizeof(G_context.tx_info.script_hash),
+                   G_tx.script_hash,
+                   sizeof(G_tx.script_hash)) == -1) {
         return io_send_sw(SW_DISPLAY_SCRIPT_HASH_FAIL);
     }
     PRINTF("Script hash: %s\n", G_tx.script_hash);
-    #endif
     start_sign_tx_ui();
 
     return 0;

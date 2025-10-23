@@ -20,9 +20,9 @@ typedef struct internalStorage_t {
 #define SETTING_SCRIPT_ALLOWED_SIZE 12
 
 typedef struct settings_strings_t {
-    char scriptsAllowed[SETTING_SCRIPT_ALLOWED_SIZE];  // Allowed / Not Allowed
-    char showScriptHash[SETTING_SCRIPT_HASH_SIZE]; // Show / Hide
-    char signerAccountFormat[SETTING_SCRIPT_ALLOWED_SIZE]; // Script hash / NEO address
+    char scriptsAllowed[SETTING_SCRIPT_ALLOWED_SIZE];       // Allowed / Not Allowed
+    char showScriptHash[SETTING_SCRIPT_HASH_SIZE];          // Show / Hide
+    char signerAccountFormat[SETTING_SCRIPT_ALLOWED_SIZE];  // Script hash / NEO address
 } settings_strings_t;
 
 extern settings_strings_t strings;

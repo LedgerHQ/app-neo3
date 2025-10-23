@@ -18,7 +18,7 @@
 #include "deserialize.h"
 #include "types.h"
 #include "constants.h"
-#include "common/buffer.h"
+#include "app_buffer.h"
 #include "tx_utils.h"
 
 #include <string.h>
@@ -64,7 +64,7 @@ parser_status_e transaction_deserialize(buffer_t *buf, transaction_t *tx) {
 
     // Parse (Co)Signers
     uint64_t signer_length;
-    if (!buffer_read_varint(buf, &signer_length)) {
+    if (!buffer_read_uvarint(buf, &signer_length)) {
         return SIGNER_LENGTH_PARSING_ERROR;
     }
     if (signer_length < MIN_TX_SIGNERS || signer_length > MAX_TX_SIGNERS) {
@@ -99,7 +99,7 @@ parser_status_e transaction_deserialize(buffer_t *buf, transaction_t *tx) {
 
         uint64_t var_int_length;
         if (((witness_scope_e) value & CUSTOM_CONTRACTS) == CUSTOM_CONTRACTS) {
-            if (!buffer_read_varint(buf, &var_int_length)) {
+            if (!buffer_read_uvarint(buf, &var_int_length)) {
                 return SIGNER_ALLOWED_CONTRACTS_LENGTH_PARSING_ERROR;
             }
             if (var_int_length > MAX_SIGNER_ALLOWED_CONTRACTS) {
@@ -116,7 +116,7 @@ parser_status_e transaction_deserialize(buffer_t *buf, transaction_t *tx) {
 
         var_int_length = 0;
         if (((witness_scope_e) value & CUSTOM_GROUPS) == CUSTOM_GROUPS) {
-            if (!buffer_read_varint(buf, &var_int_length)) {
+            if (!buffer_read_uvarint(buf, &var_int_length)) {
                 return SIGNER_ALLOWED_GROUPS_LENGTH_PARSING_ERROR;
             }
             if (var_int_length > MAX_SIGNER_ALLOWED_GROUPS) {
@@ -134,11 +134,11 @@ parser_status_e transaction_deserialize(buffer_t *buf, transaction_t *tx) {
 
     // Parse transaction attributes
     uint64_t attributes_length;
-    if (!buffer_read_varint(buf, &attributes_length)) {
+    if (!buffer_read_uvarint(buf, &attributes_length)) {
         return ATTRIBUTES_LENGTH_PARSING_ERROR;
     }
-    // The actual network does (MAX_TX_SIGNERS (16) - signer length) but due to memory constraints we lowered the
-    // MAX_ATTRIBUTES and hardcode the attributes limit to 2
+    // The actual network does (MAX_TX_SIGNERS (16) - signer length) but due to memory constraints
+    // we lowered the MAX_ATTRIBUTES and hardcode the attributes limit to 2
     if (attributes_length > MAX_ATTRIBUTES || attributes_length > 2) {
         return ATTRIBUTES_LENGTH_VALUE_ERROR;
     }
@@ -162,7 +162,7 @@ parser_status_e transaction_deserialize(buffer_t *buf, transaction_t *tx) {
 
     // Parse out script
     uint64_t script_length;
-    if (!buffer_read_varint(buf, &script_length)) {
+    if (!buffer_read_uvarint(buf, &script_length)) {
         return SCRIPT_LENGTH_PARSING_ERROR;
     }
 
